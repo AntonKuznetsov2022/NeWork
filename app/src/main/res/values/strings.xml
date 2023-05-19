@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">NeWork</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_profile">Profile</string>
+
+    //navigation
+    <string name="menu_feed">Feed</string>
+    <string name="menu_events">Events</string>
+    <string name="menu_my_wall">My wall</string>
+    <string name="menu_new_post">New post</string>
+    <string name="menu_new_event">New event</string>
+
+
+    //menu
+    <string name="menu_edit">Edit</string>
+    <string name="menu_remove">Remove</string>
+    <string name="add_post">Add post</string>
+
+    //card post
+    <string name="post_avatar">Avatar</string>
+    <string name="post_menu">Menu</string>
+    <string name="post_like">Like</string>
+    <string name="post_share">Share</string>
+
+    //event post
+    <string name="member">Member</string>
+
+    //adapter
+    <string name="unknown_item_type">Unknown item type</string>
+    <string name="unknown_view_type">Unknown view type</string>
+
+    //Feed
+    <string name="error_loading">Something went wrong. Try again later</string>
+    <string name="retry_loading">Retry</string>
+</resources>

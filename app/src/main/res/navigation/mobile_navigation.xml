@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_feed">
+
+    <fragment
+        android:id="@+id/nav_feed"
+        android:name="ru.netology.nework.ui.post.FeedFragment"
+        android:label="@string/menu_feed"
+        tools:layout="@layout/fragment_feed" >
+        <action
+            android:id="@+id/action_nav_feed_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_events"
+        android:name="ru.netology.nework.ui.events.EventsFragment"
+        android:label="@string/menu_events"
+        tools:layout="@layout/fragment_events" />
+
+    <fragment
+        android:id="@+id/nav_my_wall"
+        android:name="ru.netology.nework.ui.MyWallFragment"
+        android:label="@string/menu_my_wall"
+        tools:layout="@layout/fragment_mywall" />
+    <fragment
+        android:id="@+id/newPostFragment"
+        android:label="@string/menu_my_wall"
+        android:name="ru.netology.nework.ui.post.NewPostFragment" />
+</navigation>

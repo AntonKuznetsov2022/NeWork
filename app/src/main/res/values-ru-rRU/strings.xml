@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Сеть</string>
+    <string name="navigation_drawer_open">Открыть панель навигации</string>
+    <string name="navigation_drawer_close">Закрыть панель навигации</string>
+    <string name="nav_header_desc">Заголовок навигации</string>
+    <string name="action_profile">Профиль</string>
+
+    //navigation
+    <string name="menu_feed">Список постов</string>
+    <string name="menu_events">Список встреч</string>
+    <string name="menu_my_wall">Мои посты</string>
+    <string name="menu_new_post">Новый пост</string>
+    <string name="menu_new_event">Новая встреча</string>
+
+    //menu
+    <string name="menu_edit">Изменить</string>
+    <string name="menu_remove">Удалить</string>
+    <string name="add_post">Добавить пост</string>
+
+    //card post
+    <string name="post_avatar">Аватар</string>
+    <string name="post_menu">Menu</string>
+    <string name="post_like">Нравится</string>
+    <string name="post_share">Поделиться</string>
+
+    //event post
+    <string name="member">Участники</string>
+
+    //adapter
+    <string name="unknown_item_type">Неизвестный тип элемента</string>
+    <string name="unknown_view_type">Неизвестный тип макета</string>
+
+    //Feed
+    <string name="error_loading">Что-то пошло не так. Попробуйте позднее</string>
+    <string name="retry_loading">Повторить</string>
+</resources>
