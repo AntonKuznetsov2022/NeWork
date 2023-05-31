@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -70,14 +71,15 @@ class PostViewHolder(
             author.text = post.author
             job.text = post.authorJob
 
-/*            val publishedTime = OffsetDateTime.parse(post.published).toLocalDateTime()
+            val publishedTime = OffsetDateTime.parse(post.published).toLocalDateTime()
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy в HH:mm")
-            published.text = publishedTime.format(formatter)*/
-
+            published.text = publishedTime.format(formatter)
             content.text = post.content
-
             like.isChecked = post.likedByMe
-            like.text = "${countText(post.likes)}"
+            like.text = "${countText(post.likeOwnerIds.size)}"
+
+            menu.isVisible = post.ownedByMe
+
             like.setOnClickListener {
                 onInteractionListener.onLike(post)
             }

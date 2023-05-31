@@ -30,7 +30,6 @@ private val empty = Post(
     content = "",
     published = "",
     likedByMe = false,
-    likes = 0,
 )
 
 @HiltViewModel
@@ -80,14 +79,16 @@ class PostViewModel @Inject constructor(
 
     fun save() {
         edited.value?.let {
-            viewModelScope.launch {
-                try {
-                    repository.save(it)
-                    _postCreated.value = Unit
-                    edited.value = empty
-                    _state.value = FeedModelState()
-                } catch (e: Exception) {
-                    _state.value = FeedModelState(error = true)
+            appAuth.getToken()?.let { token ->
+                viewModelScope.launch {
+                    try {
+                        repository.save(token, it)
+                        _postCreated.value = Unit
+                        edited.value = empty
+                        _state.value = FeedModelState()
+                    } catch (e: Exception) {
+                        _state.value = FeedModelState(error = true)
+                    }
                 }
             }
         }
@@ -95,6 +96,32 @@ class PostViewModel @Inject constructor(
 
     fun edit(post: Post) {
         edited.value = post
+    }
+
+    fun likeById(id: Int) {
+        viewModelScope.launch {
+            try {
+                appAuth.getToken()?.let { token ->
+                    repository.likeById(token, id, appAuth.getId())
+                    _state.value = FeedModelState()
+                }
+            } catch (e: Exception) {
+                _state.value = FeedModelState(error = true)
+            }
+        }
+    }
+
+    fun unlikeById(id: Int) {
+        viewModelScope.launch {
+            try {
+                appAuth.getToken()?.let { token ->
+                    repository.unlikeById(token, id, appAuth.getId())
+                    _state.value = FeedModelState()
+                }
+            } catch (e: Exception) {
+                _state.value = FeedModelState(error = true)
+            }
+        }
     }
 
     fun changeContent(content: String) {

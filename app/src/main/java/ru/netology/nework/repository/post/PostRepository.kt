@@ -8,5 +8,7 @@ import ru.netology.nework.dto.Post
 interface PostRepository {
     val data: Flow<PagingData<FeedItem>>
     suspend fun get()
-    suspend fun save(post: Post)
+    suspend fun save(authToken: String, post: Post)
+    suspend fun likeById(authToken: String, id: Int, userId: Int)
+    suspend fun unlikeById(authToken: String, id: Int, userId: Int)
 }

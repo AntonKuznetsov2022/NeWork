@@ -34,4 +34,24 @@
     //Feed
     <string name="error_loading">Что-то пошло не так. Попробуйте позднее</string>
     <string name="retry_loading">Повторить</string>
+
+    //User
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="registration">Регистрация</string>
+    <string name="enter">Вход</string>
+    <string name="sign_in_wrong">Не верный логин или пароль</string>
+    <string name="sign_in_error">Что-то пошло не так. Попробуйте позднее</string>
+    <string name="login_success">Вы успешно зашли в профиль</string>
+    <string name="login_exit">Вы вышли из профиля</string>
+    <string name="sign_in">Вход в профиль</string>
+
+    //My wall
+    <string name="login_title">Для просмотра списка постов, необходимо войти в профиль</string>
+    <string name="login_button">Войти в профиль</string>
+
+    //dialog
+    <string name="log_account">Вход в профиль</string>
+    <string name="enter_in_app">Для использования приложения необходимо войти в профиль</string>
+    <string name="guest">Продолжить, как гость</string>
 </resources>

@@ -55,4 +55,34 @@ class EventRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun likeById(authToken: String, id: Int, userId: Int) {
+        try {
+            val postsResponse = apiService.likeEventById(authToken, id)
+            if (!postsResponse.isSuccessful) {
+                throw ApiError(postsResponse.code(), postsResponse.message())
+            }
+            eventDao.likedById(id, userId)
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw UnknownError
+        }
+    }
+
+    override suspend fun unlikeById(authToken: String, id: Int, userId: Int) {
+        try {
+            val postsResponse = apiService.unlikeEventById(authToken, id)
+            if (!postsResponse.isSuccessful) {
+                throw ApiError(postsResponse.code(), postsResponse.message())
+            }
+            eventDao.unlikedById(id, userId)
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw UnknownError
+        }
+    }
+
 }

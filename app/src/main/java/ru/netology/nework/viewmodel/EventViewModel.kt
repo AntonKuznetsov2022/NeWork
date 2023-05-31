@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.dto.Event
 import ru.netology.nework.dto.EventItem
+import ru.netology.nework.dto.EventType
 import ru.netology.nework.model.FeedModelState
 import ru.netology.nework.repository.event.EventRepository
 import javax.inject.Inject
@@ -28,9 +29,8 @@ private val empty = Event(
     content = "",
     datetime = "",
     published = "",
-    type = "",
+    type = EventType.OFFLINE,
     likedByMe = false,
-    likes = 0,
 )
 
 @HiltViewModel
@@ -67,6 +67,32 @@ class EventViewModel @Inject constructor(
                 _state.value = FeedModelState(loading = true)
                 repository.get()
                 _state.value = FeedModelState()
+            } catch (e: Exception) {
+                _state.value = FeedModelState(error = true)
+            }
+        }
+    }
+
+    fun likeById(id: Int) {
+        viewModelScope.launch {
+            try {
+                appAuth.getToken()?.let { token ->
+                    repository.likeById(token, id, appAuth.getId())
+                    _state.value = FeedModelState()
+                }
+            } catch (e: Exception) {
+                _state.value = FeedModelState(error = true)
+            }
+        }
+    }
+
+    fun unlikeById(id: Int) {
+        viewModelScope.launch {
+            try {
+                appAuth.getToken()?.let { token ->
+                    repository.unlikeById(token, id, appAuth.getId())
+                    _state.value = FeedModelState()
+                }
             } catch (e: Exception) {
                 _state.value = FeedModelState(error = true)
             }

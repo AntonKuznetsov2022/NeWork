@@ -1,12 +1,12 @@
 package ru.netology.nework.dto
 
 sealed class FeedItem {
-    abstract val id: Long
+    abstract val id: Int
 }
 
 data class Post(
-    override val id: Long,
-    val authorId: Long,
+    override val id: Int,
+    val authorId: Int,
     val author: String,
     val authorAvatar: String? = null,
     val authorJob: String? = null,
@@ -14,19 +14,10 @@ data class Post(
     val published: String,
     val coords: Coords? = null,
     val link: String? = null,
-    //val likeOwnerIds: List<Int>,
-    //val mentionIds: List<Int>,
+    val likeOwnerIds: List<Int> = emptyList(),
+    val mentionIds: List<Int> = emptyList(),
     val mentionedMe: Boolean = false,
     val likedByMe: Boolean = false,
-    val likes: Int,
+    val attachment: Attachment? = null,
     val ownedByMe: Boolean = false,
 ) : FeedItem ()
-
-data class Attachment(
-    val url: String,
-    val type: AttachmentType,
-)
-
-enum class AttachmentType {
-    IMAGE
-}

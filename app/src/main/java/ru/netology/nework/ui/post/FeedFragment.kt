@@ -18,9 +18,12 @@ import kotlinx.coroutines.flow.collectLatest
 import ru.netology.nework.R
 import ru.netology.nework.adapter.OnInteractionListener
 import ru.netology.nework.adapter.PostAdapter
+import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentFeedBinding
 import ru.netology.nework.dto.Post
+import ru.netology.nework.ui.dialog.AuthDialog
 import ru.netology.nework.viewmodel.PostViewModel
+import javax.inject.Inject
 
 @AndroidEntryPoint
 @ExperimentalCoroutinesApi
@@ -30,6 +33,9 @@ class FeedFragment : Fragment() {
 
     private val viewModel: PostViewModel by activityViewModels()
 
+    @Inject
+    lateinit var appAuth: AppAuth
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,6 +44,20 @@ class FeedFragment : Fragment() {
         binding = FragmentFeedBinding.inflate(inflater, container, false)
 
         val adapter = PostAdapter(object : OnInteractionListener {
+
+            override fun onLike(post: Post) {
+                if (appAuth.getToken() == null) {
+                    AuthDialog()
+                        .show(childFragmentManager, null)
+                } else {
+                    if (!post.likedByMe) {
+                        viewModel.likeById(post.id)
+                    } else {
+                        viewModel.unlikeById(post.id)
+                    }
+                }
+            }
+
             override fun onShare(post: Post) {
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND
@@ -87,7 +107,12 @@ class FeedFragment : Fragment() {
         }
 
         binding.fab.setOnClickListener {
-            findNavController().navigate(R.id.action_nav_feed_to_newPostFragment)
+            if (appAuth.getToken() == null) {
+                AuthDialog()
+                    .show(childFragmentManager, null)
+            } else {
+                findNavController().navigate(R.id.action_nav_feed_to_newPostFragment)
+            }
         }
 
         return binding.root

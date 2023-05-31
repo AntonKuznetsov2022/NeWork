@@ -10,10 +10,10 @@ import ru.netology.nework.entity.EventRemoteKeyEntity
 interface EventRemoteKeyDao {
 
     @Query("SELECT MAX('key') FROM EventRemoteKeyEntity")
-    suspend fun max(): Long?
+    suspend fun max(): Int?
 
     @Query("SELECT MIN('key') FROM EventRemoteKeyEntity")
-    suspend fun min(): Long?
+    suspend fun min(): Int?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(eventRemoteKeyEntity: EventRemoteKeyEntity)

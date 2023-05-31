@@ -8,6 +8,7 @@ import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import okio.IOException
+import retrofit2.HttpException
 import ru.netology.nework.api.ApiService
 import ru.netology.nework.dao.PostDao
 import ru.netology.nework.dao.PostRemoteKeyDao
@@ -56,9 +57,9 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun save(post: Post) {
+    override suspend fun save(authToken: String, post: Post) {
         try {
-/*            val postsResponse = apiService.save(post)
+            val postsResponse = apiService.savePost(authToken, post)
             if (!postsResponse.isSuccessful) {
                 throw ApiError(postsResponse.code(), postsResponse.message())
             }
@@ -66,8 +67,8 @@ class PostRepositoryImpl @Inject constructor(
             val body = postsResponse.body() ?: throw ApiError(
                 postsResponse.code(),
                 postsResponse.message()
-            )*/
-            postDao.insert(PostEntity.fromDto(post))
+            )
+            postDao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -76,4 +77,33 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun likeById(authToken: String, id: Int, userId: Int) {
+        try {
+            val postsResponse = apiService.likePostById(authToken, id)
+            if (!postsResponse.isSuccessful) {
+                throw ApiError(postsResponse.code(), postsResponse.message())
+            }
+            postDao.likedById(id, userId)
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw UnknownError
+        }
+    }
+
+    override suspend fun unlikeById(authToken: String, id: Int, userId: Int) {
+        try {
+            val postsResponse = apiService.unlikePostById(authToken, id)
+            if (!postsResponse.isSuccessful) {
+                throw ApiError(postsResponse.code(), postsResponse.message())
+            }
+            postDao.unlikedById(id, userId)
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw UnknownError
+        }
+    }
 }

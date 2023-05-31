@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -17,9 +18,12 @@ import kotlinx.coroutines.flow.collectLatest
 import ru.netology.nework.R
 import ru.netology.nework.adapter.EventAdapter
 import ru.netology.nework.adapter.OnInteractionListenerEvent
+import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentEventsBinding
 import ru.netology.nework.dto.Event
+import ru.netology.nework.ui.dialog.AuthDialog
 import ru.netology.nework.viewmodel.EventViewModel
+import javax.inject.Inject
 
 @AndroidEntryPoint
 @ExperimentalCoroutinesApi
@@ -29,6 +33,9 @@ class EventsFragment : Fragment() {
 
     private val viewModel: EventViewModel by activityViewModels()
 
+    @Inject
+    lateinit var appAuth: AppAuth
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,6 +44,20 @@ class EventsFragment : Fragment() {
         binding = FragmentEventsBinding.inflate(inflater, container, false)
 
         val adapter = EventAdapter(object : OnInteractionListenerEvent {
+
+            override fun onLike(event: Event) {
+                if (appAuth.getToken() == null) {
+                    AuthDialog()
+                        .show(childFragmentManager, null)
+                } else {
+                    if (!event.likedByMe) {
+                        viewModel.likeById(event.id)
+                    } else {
+                        viewModel.unlikeById(event.id)
+                    }
+                }
+            }
+
             override fun onShare(event: Event) {
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND
@@ -49,7 +70,7 @@ class EventsFragment : Fragment() {
             }
         })
 
-        adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0) {
                     binding.events.smoothScrollToPosition(0)
@@ -86,8 +107,13 @@ class EventsFragment : Fragment() {
         }
 
         binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            if (appAuth.getToken() == null) {
+                AuthDialog()
+                    .show(childFragmentManager, null)
+            } else {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+            }
         }
 
         return binding.root

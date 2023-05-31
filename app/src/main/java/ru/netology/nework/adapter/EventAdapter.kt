@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -71,13 +72,16 @@ class EventViewHolder(
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy в HH:mm")
             dateEvent.text = dateTime.format(formatter)
 
-            type.text = event.type
+            type.text = event.type.toString()
             content.text = event.content
 
-            //members.text = "${event.participantsIds.size}"
+            members.text = "${event.participantsIds.size}"
 
             like.isChecked = event.likedByMe
-            like.text = "${countText(event.likes)}"
+            like.text = "${countText(event.likeOwnerIds.size)}"
+
+            menu.isVisible = event.ownedByMe
+
             like.setOnClickListener {
                 onInteractionListenerEvent.onLike(event)
             }

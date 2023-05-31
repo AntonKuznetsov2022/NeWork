@@ -26,9 +26,9 @@ class AppAuth @Inject constructor(
 
     init {
         val token = prefs.getString(TOKEN_KEY, null)
-        val id = prefs.getLong(ID_KEY, 0L)
+        val id = prefs.getInt(ID_KEY, 0)
 
-        if (token == null || id == 0L) {
+        if (token == null || id == 0) {
             _data = MutableStateFlow(null)
 
             prefs.edit { clear() }
@@ -45,11 +45,19 @@ class AppAuth @Inject constructor(
         fun apiService(): ApiService
     }
 
+    fun getToken(): String? {
+        return prefs.getString(TOKEN_KEY, null)
+    }
+
+    fun getId(): Int {
+        return prefs.getInt(ID_KEY, 0)
+    }
+
     @Synchronized
-    fun setAuth(id: Long, token: String) {
+    fun setAuth(id: Int, token: String) {
         _data.value = AuthModel(id, token)
         prefs.edit {
-            putLong(ID_KEY, id)
+            putInt(ID_KEY, id)
             putString(TOKEN_KEY, token)
         }
     }

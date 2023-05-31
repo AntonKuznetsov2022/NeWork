@@ -8,4 +8,6 @@ import ru.netology.nework.dto.FeedItem
 interface EventRepository {
     val data: Flow<PagingData<EventItem>>
     suspend fun get()
+    suspend fun likeById(authToken: String, id: Int, userId: Int)
+    suspend fun unlikeById(authToken: String, id: Int, userId: Int)
 }

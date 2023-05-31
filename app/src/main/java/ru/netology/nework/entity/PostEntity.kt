@@ -1,5 +1,6 @@
 package ru.netology.nework.entity
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.netology.nework.dto.Coords
@@ -8,8 +9,8 @@ import ru.netology.nework.dto.Post
 @Entity
 data class PostEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
-    val authorId: Long,
+    val id: Int,
+    val authorId: Int,
     val author: String,
     val authorAvatar: String?,
     val authorJob: String?,
@@ -18,9 +19,13 @@ data class PostEntity(
     val latitude: Double?,
     val longitude: Double?,
     val link: String?,
+    val likeOwnerIds: List<Int>,
+    val mentionIds: List<Int>,
     val mentionedMe: Boolean = false,
     val likedByMe: Boolean = false,
-    val likes: Int = 0,
+    @Embedded
+    val attachment: AttachmentEmbedded?,
+    val ownedByMe: Boolean = false,
 ) {
     fun toDto() =
         Post(
@@ -33,9 +38,12 @@ data class PostEntity(
             published,
             latitude?.let { longitude?.let { it1 -> Coords(it, it1) } },
             link,
+            likeOwnerIds,
+            mentionIds,
             mentionedMe,
             likedByMe,
-            likes,
+            attachment?.toDto(),
+            ownedByMe,
         )
 
     companion object {
@@ -51,9 +59,12 @@ data class PostEntity(
                 dto.coords?.lat,
                 dto.coords?.long,
                 dto.link,
+                dto.likeOwnerIds,
+                dto.mentionIds,
                 dto.mentionedMe,
                 dto.likedByMe,
-                dto.likes,
+                AttachmentEmbedded.fromDto(dto.attachment),
+                dto.ownedByMe,
             )
     }
 }

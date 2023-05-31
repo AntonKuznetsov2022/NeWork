@@ -34,4 +34,24 @@
     //Feed
     <string name="error_loading">Something went wrong. Try again later</string>
     <string name="retry_loading">Retry</string>
+
+    //User
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="registration">Registration</string>
+    <string name="enter">Enter</string>
+    <string name="sign_in_wrong">Wrong login or password</string>
+    <string name="sign_in_error">Something went wrong. Try again later</string>
+    <string name="login_success">You are logged in</string>
+    <string name="login_exit">You are logged out</string>
+    <string name="sign_in">Profile login</string>
+
+    //My wall
+    <string name="login_title">You must be logged in to view the list of posts</string>
+    <string name="login_button">Profile login</string>
+
+    //dialog
+    <string name="log_account">Log into your account</string>
+    <string name="enter_in_app">Log into your account to use the application</string>
+    <string name="guest">Continue as a guest</string>
 </resources>

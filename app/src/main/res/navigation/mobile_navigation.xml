@@ -9,7 +9,7 @@
         android:id="@+id/nav_feed"
         android:name="ru.netology.nework.ui.post.FeedFragment"
         android:label="@string/menu_feed"
-        tools:layout="@layout/fragment_feed" >
+        tools:layout="@layout/fragment_feed">
         <action
             android:id="@+id/action_nav_feed_to_newPostFragment"
             app:destination="@id/newPostFragment" />
@@ -25,9 +25,21 @@
         android:id="@+id/nav_my_wall"
         android:name="ru.netology.nework.ui.MyWallFragment"
         android:label="@string/menu_my_wall"
-        tools:layout="@layout/fragment_mywall" />
+        tools:layout="@layout/fragment_mywall" >
+        <action
+            android:id="@+id/action_nav_my_wall_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
+    </fragment>
     <fragment
         android:id="@+id/newPostFragment"
-        android:label="@string/menu_my_wall"
-        android:name="ru.netology.nework.ui.post.NewPostFragment" />
+        android:name="ru.netology.nework.ui.post.NewPostFragment"
+        android:label="@string/menu_new_post" />
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="ru.netology.nework.ui.auth.SignInFragment"
+        android:label="@string/sign_in"
+        tools:layout="@layout/fragment_sign_in" />
+    <action
+        android:id="@+id/action_global_signInFragment"
+        app:destination="@id/signInFragment" />
 </navigation>
