@@ -22,6 +22,7 @@ import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentFeedBinding
 import ru.netology.nework.dto.Post
 import ru.netology.nework.ui.dialog.AuthDialog
+import ru.netology.nework.ui.post.NewPostFragment.Companion.textArg
 import ru.netology.nework.viewmodel.PostViewModel
 import javax.inject.Inject
 
@@ -68,6 +69,17 @@ class FeedFragment : Fragment() {
                     Intent.createChooser(intent, getString(R.string.post_share))
                 startActivity(shareIntent)
             }
+
+            override fun onEdit(post: Post) {
+                findNavController().navigate(
+                    R.id.action_nav_feed_to_newPostFragment,
+                    Bundle().apply { textArg = post.content })
+                viewModel.edit(post)
+            }
+
+            override fun onRemove(post: Post) {
+                viewModel.removeById(post.id)
+            }
         })
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -109,7 +121,7 @@ class FeedFragment : Fragment() {
         binding.fab.setOnClickListener {
             if (appAuth.getToken() == null) {
                 AuthDialog()
-                    .show(childFragmentManager, null)
+                    .show(parentFragmentManager, null)
             } else {
                 findNavController().navigate(R.id.action_nav_feed_to_newPostFragment)
             }

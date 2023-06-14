@@ -15,11 +15,12 @@ import ru.netology.nework.error.ApiError
 import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
-class PostRemoteMediator(
+class PostUserWallMediator(
     private val apiService: ApiService,
     private val postDao: PostDao,
     private val postRemoteKeyDao: PostRemoteKeyDao,
     private val appDb: AppDb,
+    private val userId: Int,
 ) : RemoteMediator<Int, PostEntity>() {
     override suspend fun load(
         loadType: LoadType,
@@ -28,16 +29,16 @@ class PostRemoteMediator(
         try {
             val response = when (loadType) {
                 LoadType.REFRESH -> {
-                    if (postDao.isEmpty()) {
+                    if (postDao.isUserWallEmpty(userId)) {
                         val id = postRemoteKeyDao.max() ?: return MediatorResult.Success(false)
-                        apiService.getBefore(id, state.config.pageSize)
+                        apiService.getUserWallBefore(userId, id, state.config.pageSize)
                     } else {
-                        apiService.getLatest(state.config.initialLoadSize)
+                        apiService.getUserWallLatest(userId, state.config.initialLoadSize)
                     }
                 }
                 LoadType.APPEND -> {
                     val id = postRemoteKeyDao.min() ?: return MediatorResult.Success(false)
-                    apiService.getAfter(id, state.config.pageSize)
+                    apiService.getUserWallAfter(userId, id, state.config.pageSize)
                 }
                 LoadType.PREPEND -> {
                     return MediatorResult.Success(false)
@@ -55,7 +56,7 @@ class PostRemoteMediator(
             appDb.withTransaction {
                 when (loadType) {
                     LoadType.REFRESH -> {
-                        if (postDao.isEmpty()) {
+                        if (postDao.isUserWallEmpty(userId)) {
                             postRemoteKeyDao.insert(
                                 listOf(
                                     PostRemoteKeyEntity(
@@ -88,8 +89,7 @@ class PostRemoteMediator(
                     }
                 }
 
-
-                postDao.insert(body.map { PostEntity.fromDto(it) })
+                postDao.insert(body.map(PostEntity::fromDto))
             }
 
             return MediatorResult.Success(body.isEmpty())

@@ -24,6 +24,9 @@
     <string name="post_like">Нравится</string>
     <string name="post_share">Поделиться</string>
 
+    //new post
+    <string name="enter_text">Введите текст</string>
+
     //event post
     <string name="member">Участники</string>
 
@@ -34,17 +37,30 @@
     //Feed
     <string name="error_loading">Что-то пошло не так. Попробуйте позднее</string>
     <string name="retry_loading">Повторить</string>
+    <string name="user_registered">Пользователь уже зарегистрирован</string>
 
     //User
     <string name="login">Логин</string>
+    <string name="logout">Выход</string>
     <string name="password">Пароль</string>
+    <string name="confirm_password">Повторить пароль</string>
     <string name="registration">Регистрация</string>
-    <string name="enter">Вход</string>
+    <string name="create_new_acc">Создать новый аккаунт</string>
+    <string name="enter">Войти в профиль</string>
     <string name="sign_in_wrong">Не верный логин или пароль</string>
     <string name="sign_in_error">Что-то пошло не так. Попробуйте позднее</string>
     <string name="login_success">Вы успешно зашли в профиль</string>
     <string name="login_exit">Вы вышли из профиля</string>
     <string name="sign_in">Вход в профиль</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="sign_up_name">Имя</string>
+    <string name="sign_up_login">Логин</string>
+    <string name="sign_up_avatar">Фото профиля</string>
+    <string name="sign_up_but_clear">Очистить</string>
+    <string name="reg_ok">Профиль успешно создан!</string>
+    <string name="required_field">Обязательное поле</string>
+    <string name="passwords_dont_match">Пароли не совпадают</string>
+    <string name="photo_error">Ошибка</string>
 
     //My wall
     <string name="login_title">Для просмотра списка постов, необходимо войти в профиль</string>
@@ -53,5 +69,13 @@
     //dialog
     <string name="log_account">Вход в профиль</string>
     <string name="enter_in_app">Для использования приложения необходимо войти в профиль</string>
-    <string name="guest">Продолжить, как гость</string>
+    <string name="guest">Позже</string>
+    <string name="ok">ОК</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="login_exit_qu">Вы хотите выйти из профиля?</string>
+    <string name="text_confirm_save">Спасибо!\nВаши данные сохранены!</string>
+    <string name="camera">Камера</string>
+    <string name="gallery">Галерея</string>
+
 </resources>

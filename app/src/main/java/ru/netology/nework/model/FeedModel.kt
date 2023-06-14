@@ -1,7 +1,5 @@
 package ru.netology.nework.model
 
-import ru.netology.nework.dto.User
-
 data class FeedModelState(
     val loading: Boolean = false,
     val error: Boolean = false,
@@ -21,5 +19,5 @@ data class SignInModelState(
 
 data class SignUpModelState(
     val signUpError: Boolean = false,
-    val passCheck: Boolean = false
+    val signUpWrong: Boolean = false,
 )

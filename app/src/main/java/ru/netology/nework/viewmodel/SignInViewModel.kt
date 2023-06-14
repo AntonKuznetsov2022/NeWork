@@ -29,17 +29,17 @@ class SignInViewModel @Inject constructor(
 
     fun signIn(login: String, password: String) = viewModelScope.launch {
         try {
-            val postsResponse = apiService.updateUser(login, password)
-            if (!postsResponse.isSuccessful) {
-                if (postsResponse.code() == 400 || postsResponse.code() == 404) {
+            val response = apiService.updateUser(login, password)
+            if (!response.isSuccessful) {
+                if (response.code() == 400 || response.code() == 404) {
                     _stateSignIn.value = SignInModelState(signInWrong = true)
                 }
                 _stateSignIn.value = SignInModelState(signInError = true)
             }
 
-            val body = postsResponse.body() ?: throw ApiError(
-                postsResponse.code(),
-                postsResponse.message()
+            val body = response.body() ?: throw ApiError(
+                response.code(),
+                response.message()
             )
             _signInApp.postValue(body)
             _stateSignIn.value = SignInModelState()

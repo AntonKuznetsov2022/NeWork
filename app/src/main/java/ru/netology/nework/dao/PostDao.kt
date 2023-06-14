@@ -14,8 +14,14 @@ interface PostDao {
     @Query("SELECT COUNT(*) == 0 FROM PostEntity")
     suspend fun isEmpty(): Boolean
 
+    @Query("SELECT COUNT(*) == 0 FROM PostEntity WHERE authorId = :userId")
+    suspend fun isUserWallEmpty(userId: Int): Boolean
+
     @Query("SELECT * FROM PostEntity ORDER BY id DESC")
     fun allPostPaging(): PagingSource<Int, PostEntity>
+
+    @Query("SELECT * FROM PostEntity WHERE authorId = :userId ORDER BY id DESC")
+    fun getUserWallPaging(userId: Int): PagingSource<Int, PostEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(post: PostEntity)
@@ -25,6 +31,9 @@ interface PostDao {
 
     @Query("SELECT * FROM PostEntity WHERE id = :id")
     suspend fun getPost(id: Int): PostEntity
+
+    @Query("DELETE FROM PostEntity WHERE id = :id")
+    suspend fun removeById(id: Int)
 
     @Upsert
     suspend fun save(post: PostEntity)

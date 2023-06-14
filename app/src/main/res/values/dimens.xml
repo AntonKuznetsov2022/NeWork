@@ -10,4 +10,5 @@
     <dimen name="card_post_16">16dp</dimen>
     <dimen name="card_post_24">24dp</dimen>
     <dimen name="card_post_48">48dp</dimen>
+    <dimen name="photo_avatar">192dp</dimen>
 </resources>

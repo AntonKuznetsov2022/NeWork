@@ -14,7 +14,6 @@ import ru.netology.nework.entity.EventRemoteKeyEntity
 import ru.netology.nework.error.ApiError
 import java.io.IOException
 
-
 @OptIn(ExperimentalPagingApi::class)
 class EventRemoteMediator(
     private val apiService: ApiService,
@@ -31,7 +30,7 @@ class EventRemoteMediator(
                 LoadType.REFRESH -> {
                     if (eventDao.isEmpty()) {
                         val id = eventRemoteKeyDao.max() ?: return MediatorResult.Success(false)
-                        apiService.getBeforeEvent(id.toString(), state.config.pageSize)
+                        apiService.getBeforeEvent(id, state.config.pageSize)
                     } else {
                         apiService.getLatestEvent(state.config.initialLoadSize)
                     }
@@ -39,7 +38,7 @@ class EventRemoteMediator(
 
                 LoadType.APPEND -> {
                     val id = eventRemoteKeyDao.min() ?: return MediatorResult.Success(false)
-                    apiService.getAfterEvent(id.toString(), state.config.pageSize)
+                    apiService.getAfterEvent(id, state.config.pageSize)
                 }
 
                 LoadType.PREPEND -> {

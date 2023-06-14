@@ -30,6 +30,9 @@ interface EventDao {
     @Query("SELECT * FROM EventEntity WHERE id = :id")
     suspend fun getEvent(id: Int): EventEntity
 
+    @Query("DELETE FROM EventEntity WHERE id = :id")
+    suspend fun removeById(id: Int)
+
     @Upsert
     suspend fun save(event: EventEntity)
 

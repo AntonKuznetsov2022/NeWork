@@ -68,9 +68,9 @@ class PostViewModel @Inject constructor(
     fun loadPosts() {
         viewModelScope.launch {
             try {
-                _state.value = FeedModelState(loading = true)
-                repository.get()
-                _state.value = FeedModelState()
+                    _state.value = FeedModelState(loading = true)
+                    repository.get()
+                    _state.value = FeedModelState()
             } catch (e: Exception) {
                 _state.value = FeedModelState(error = true)
             }
@@ -96,6 +96,19 @@ class PostViewModel @Inject constructor(
 
     fun edit(post: Post) {
         edited.value = post
+    }
+
+    fun removeById(id: Int) {
+        viewModelScope.launch {
+            try {
+                appAuth.getToken()?.let { token ->
+                    repository.removeById(token, id)
+                    _state.value = FeedModelState()
+                }
+            } catch (e: Exception) {
+                _state.value = FeedModelState(error = true)
+            }
+        }
     }
 
     fun likeById(id: Int) {

@@ -22,6 +22,7 @@ import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentEventsBinding
 import ru.netology.nework.dto.Event
 import ru.netology.nework.ui.dialog.AuthDialog
+import ru.netology.nework.ui.post.NewPostFragment.Companion.textArg
 import ru.netology.nework.viewmodel.EventViewModel
 import javax.inject.Inject
 
@@ -48,7 +49,7 @@ class EventsFragment : Fragment() {
             override fun onLike(event: Event) {
                 if (appAuth.getToken() == null) {
                     AuthDialog()
-                        .show(childFragmentManager, null)
+                        .show(parentFragmentManager, null)
                 } else {
                     if (!event.likedByMe) {
                         viewModel.likeById(event.id)
@@ -67,6 +68,17 @@ class EventsFragment : Fragment() {
                 val shareIntent =
                     Intent.createChooser(intent, getString(R.string.post_share))
                 startActivity(shareIntent)
+            }
+
+            override fun onEdit(event: Event) {
+/*                findNavController().navigate(
+                    R.id.action_nav_feed_to_newPostFragment,
+                    Bundle().apply { textArg = event.content })*/
+                viewModel.edit(event)
+            }
+
+            override fun onRemove(event: Event) {
+                viewModel.removeById(event.id)
             }
         })
 
@@ -109,7 +121,7 @@ class EventsFragment : Fragment() {
         binding.fab.setOnClickListener { view ->
             if (appAuth.getToken() == null) {
                 AuthDialog()
-                    .show(childFragmentManager, null)
+                    .show(parentFragmentManager, null)
             } else {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()

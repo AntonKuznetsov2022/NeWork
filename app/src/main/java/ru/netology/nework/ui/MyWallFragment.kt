@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,9 +20,11 @@ import ru.netology.nework.R
 import ru.netology.nework.adapter.OnInteractionListener
 import ru.netology.nework.adapter.PostAdapter
 import ru.netology.nework.auth.AppAuth
-import ru.netology.nework.databinding.FragmentMywallBinding
+import ru.netology.nework.databinding.FragmentMyWallBinding
 import ru.netology.nework.dto.Post
 import ru.netology.nework.ui.dialog.AuthDialog
+import ru.netology.nework.ui.post.NewPostFragment.Companion.textArg
+import ru.netology.nework.viewmodel.MyWallViewModel
 import ru.netology.nework.viewmodel.PostViewModel
 import javax.inject.Inject
 
@@ -28,9 +32,10 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class MyWallFragment : Fragment() {
 
-    lateinit var binding: FragmentMywallBinding
+    lateinit var binding: FragmentMyWallBinding
 
     private val viewModel: PostViewModel by activityViewModels()
+    private val myWallViewModel: MyWallViewModel by activityViewModels()
 
     @Inject
     lateinit var appAuth: AppAuth
@@ -41,7 +46,7 @@ class MyWallFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        binding = FragmentMywallBinding.inflate(inflater, container, false)
+        binding = FragmentMyWallBinding.inflate(inflater, container, false)
 
         val adapter = PostAdapter(object : OnInteractionListener {
 
@@ -68,26 +73,56 @@ class MyWallFragment : Fragment() {
                     Intent.createChooser(intent, getString(R.string.post_share))
                 startActivity(shareIntent)
             }
+
+            override fun onEdit(post: Post) {
+                findNavController().navigate(
+                    R.id.action_nav_my_wall_to_newPostFragment,
+                    Bundle().apply { textArg = post.content })
+                viewModel.edit(post)
+            }
+
+            override fun onRemove(post: Post) {
+                viewModel.removeById(post.id)
+            }
+        })
+
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0) {
+                    binding.myPosts.smoothScrollToPosition(0)
+                }
+            }
         })
 
         binding.myPosts.adapter = adapter
         lifecycleScope.launchWhenCreated {
-            viewModel.data.collectLatest {
+            myWallViewModel.data.collectLatest {
                 adapter.submitData(it)
             }
         }
 
-        viewModel.state.observe(viewLifecycleOwner) { state ->
+        myWallViewModel.state.observe(viewLifecycleOwner) { state ->
+            binding.swipeRefresh.isRefreshing = state.refreshing
             if (state.error) {
                 Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
                     .setAction(R.string.retry_loading) {
-                        viewModel.loadPosts()
+                        myWallViewModel.loadMyPosts()
                     }
                     .show()
             }
         }
 
-        if (appAuth.getToken() != null) {
+        binding.swipeRefresh.setOnRefreshListener {
+            adapter.refresh()
+        }
+
+        lifecycleScope.launchWhenCreated {
+            adapter.loadStateFlow.collectLatest {
+                binding.swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
+            }
+        }
+
+        if (appAuth.getToken() == null) {
             binding.loginTitle.isVisible = true
             binding.loginButton.isVisible = true
             binding.fab.isVisible = false

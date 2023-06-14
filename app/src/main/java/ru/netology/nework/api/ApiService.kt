@@ -21,13 +21,13 @@ interface ApiService {
 
     @GET("posts/{post_id}/before")
     suspend fun getBefore(
-        @Path("post_id") id: String,
+        @Path("post_id") id: Int,
         @Query("count") count: Int,
     ): Response<List<Post>>
 
     @GET("posts/{post_id}/after")
     suspend fun getAfter(
-        @Path("post_id") id: String,
+        @Path("post_id") id: Int,
         @Query("count") count: Int,
     ): Response<List<Post>>
 
@@ -39,7 +39,16 @@ interface ApiService {
     suspend fun likePostById(@Header("auth") auth: String, @Path("post_id") id: Int): Response<Post>
 
     @DELETE("posts/{post_id}/likes ")
-    suspend fun unlikePostById(@Header("auth") auth: String, @Path("post_id") id: Int): Response<Post>
+    suspend fun unlikePostById(
+        @Header("auth") auth: String,
+        @Path("post_id") id: Int
+    ): Response<Post>
+
+    @DELETE("posts/{post_id}")
+    suspend fun removePostById(
+        @Header("auth") auth: String,
+        @Path("post_id") id: Int,
+    ): Response<Unit>
 
     //events
     @GET("events")
@@ -50,24 +59,60 @@ interface ApiService {
 
     @GET("events/{event_id}/before")
     suspend fun getBeforeEvent(
-        @Path("event_id") id: String,
+        @Path("event_id") id: Int,
         @Query("count") count: Int,
     ): Response<List<Event>>
 
     @GET("events/{event_id}/after")
     suspend fun getAfterEvent(
-        @Path("event_id") id: String,
+        @Path("event_id") id: Int,
         @Query("count") count: Int,
     ): Response<List<Event>>
 
     @POST("events")
     suspend fun saveEvent(@Header("auth") auth: String, @Body event: Event): Response<Event>
 
-    @POST("events/{event_id}/likes ")
-    suspend fun likeEventById(@Header("auth") auth: String, @Path("event_id") id: Int): Response<Event>
+    @POST("events/{event_id}/likes")
+    suspend fun likeEventById(
+        @Header("auth") auth: String,
+        @Path("event_id") id: Int,
+    ): Response<Event>
 
-    @DELETE("events/{event_id}/likes ")
-    suspend fun unlikeEventById(@Header("auth") auth: String, @Path("event_id") id: Int): Response<Event>
+    @DELETE("events/{event_id}/likes")
+    suspend fun unlikeEventById(
+        @Header("auth") auth: String,
+        @Path("event_id") id: Int,
+    ): Response<Event>
+
+    @DELETE("events/{event_id}")
+    suspend fun removeEventById(
+        @Header("auth") auth: String,
+        @Path("event_id") id: Int,
+    ): Response<Unit>
+
+    //wall
+    @GET("{author_id}/wall")
+    suspend fun getUserWall(@Path("author_id") userId: Int): Response<List<Post>>
+
+    @GET("{author_id}/wall/latest")
+    suspend fun getUserWallLatest(
+        @Path("author_id") userId: Int,
+        @Query("count") count: Int,
+    ): Response<List<Post>>
+
+    @GET("{author_id}/wall/{post_id}/after")
+    suspend fun getUserWallAfter(
+        @Path("author_id") userId: Int,
+        @Path("post_id") postId: Int,
+        @Query("count") count: Int,
+    ): Response<List<Post>>
+
+    @GET("{author_id}/wall/{post_id}/before")
+    suspend fun getUserWallBefore(
+        @Path("author_id") userId: Int,
+        @Path("post_id") postId: Int,
+        @Query("count") count: Int,
+    ): Response<List<Post>>
 
     //job
     @GET("my/jobs/")
@@ -83,12 +128,11 @@ interface ApiService {
     suspend fun removeJob(@Header("auth") auth: String, @Path("job_id") id: String): Response<Unit>
 
     //user
-
     @GET("users")
     suspend fun getAllUsers(): Response<List<User>>
 
-    @GET("users/{user_id}")
-    suspend fun getUserById(@Path("id") id: Int): Response<User>
+    @GET("users/{user_id}/")
+    suspend fun getUserById(@Path("user_id") id: Int): Response<User>
 
     @FormUrlEncoded
     @POST("users/authentication/")
@@ -106,10 +150,10 @@ interface ApiService {
     ): Response<AuthModel>
 
     @Multipart
-    @POST("users/registration")
+    @POST("users/registration/")
     suspend fun registerWithPhoto(
         @Part("login") login: RequestBody,
-        @Part("pass") pass: RequestBody,
+        @Part("password") password: RequestBody,
         @Part("name") name: RequestBody,
         @Part media: MultipartBody.Part,
     ): Response<AuthModel>

@@ -24,6 +24,9 @@
     <string name="post_like">Like</string>
     <string name="post_share">Share</string>
 
+    //new post
+    <string name="enter_text">Enter text</string>
+
     //event post
     <string name="member">Member</string>
 
@@ -34,17 +37,30 @@
     //Feed
     <string name="error_loading">Something went wrong. Try again later</string>
     <string name="retry_loading">Retry</string>
+    <string name="user_registered">User already registered</string>
 
     //User
     <string name="login">Login</string>
+    <string name="logout">Logout</string>
     <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
     <string name="registration">Registration</string>
+    <string name="create_new_acc">Create new account</string>
     <string name="enter">Enter</string>
     <string name="sign_in_wrong">Wrong login or password</string>
     <string name="sign_in_error">Something went wrong. Try again later</string>
     <string name="login_success">You are logged in</string>
     <string name="login_exit">You are logged out</string>
     <string name="sign_in">Profile login</string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_up_name">Name</string>
+    <string name="sign_up_login">Login</string>
+    <string name="sign_up_avatar">Avatar</string>
+    <string name="sign_up_but_clear">Clear</string>
+    <string name="reg_ok">Profile created successfully!</string>
+    <string name="required_field">Required field!</string>
+    <string name="passwords_dont_match">Passwords don\'t match</string>
+    <string name="photo_error">Error</string>
 
     //My wall
     <string name="login_title">You must be logged in to view the list of posts</string>
@@ -53,5 +69,12 @@
     //dialog
     <string name="log_account">Log into your account</string>
     <string name="enter_in_app">Log into your account to use the application</string>
-    <string name="guest">Continue as a guest</string>
+    <string name="guest">Later</string>
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="login_exit_qu">Do you want to log out of your profile?</string>
+    <string name="text_confirm_save">Thank you!\nYour data has been saved!</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
 </resources>

@@ -85,4 +85,18 @@ class EventRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun removeById(authToken: String, id: Int) {
+        try {
+            val postsResponse = apiService.removeEventById(authToken, id)
+            if (!postsResponse.isSuccessful) {
+                throw ApiError(postsResponse.code(), postsResponse.message())
+            }
+            eventDao.removeById(id)
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw UnknownError
+        }
+    }
 }

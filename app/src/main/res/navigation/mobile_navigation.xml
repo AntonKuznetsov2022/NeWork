@@ -25,7 +25,7 @@
         android:id="@+id/nav_my_wall"
         android:name="ru.netology.nework.ui.MyWallFragment"
         android:label="@string/menu_my_wall"
-        tools:layout="@layout/fragment_mywall" >
+        tools:layout="@layout/fragment_my_wall">
         <action
             android:id="@+id/action_nav_my_wall_to_newPostFragment"
             app:destination="@id/newPostFragment" />
@@ -38,8 +38,21 @@
         android:id="@+id/signInFragment"
         android:name="ru.netology.nework.ui.auth.SignInFragment"
         android:label="@string/sign_in"
-        tools:layout="@layout/fragment_sign_in" />
+        tools:layout="@layout/fragment_sign_in">
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
     <action
         android:id="@+id/action_global_signInFragment"
         app:destination="@id/signInFragment" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="ru.netology.nework.ui.auth.SignUpFragment"
+        android:label="@string/registration"
+        tools:layout="@layout/fragment_sign_up" />
+    <dialog
+        android:id="@+id/exitAppDialog"
+        android:name="ru.netology.nework.ui.dialog.ExitAppDialog"
+        android:label="ExitAppDialog" />
 </navigation>

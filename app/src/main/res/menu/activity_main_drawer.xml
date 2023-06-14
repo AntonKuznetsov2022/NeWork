@@ -3,6 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+    <group
+        android:id="@+id/unauthorized"
+        android:visible="false">
+        <item
+            android:id="@+id/signInFragment"
+            android:icon="@drawable/ic_login"
+            android:title="@string/sign_in" />
+        <item
+            android:id="@+id/signUpFragment"
+            android:icon="@drawable/ic_app_registration"
+            android:title="@string/registration" />
+    </group>
+
+    <group
+        android:id="@+id/authorized"
+        android:visible="false">
+        <item
+            android:id="@+id/exitAppDialog"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/logout" />
+    </group>
+
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_feed"

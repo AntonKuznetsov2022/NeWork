@@ -41,7 +41,6 @@ class NewPostFragment : Fragment() {
         binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
         super.onCreate(savedInstanceState)
-
         val editText = context?.getSharedPreferences(APP_NAME, Context.MODE_PRIVATE)
         if (editText != null) {
             binding.edit.setText(editText.getString(APP_NAME, ""))
@@ -53,6 +52,9 @@ class NewPostFragment : Fragment() {
                 setSelection(text.toString().length)
             }
         }
+
+        arguments?.textArg
+            ?.let(binding.edit::setText)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             saveText(binding.edit.text.toString())

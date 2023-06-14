@@ -40,6 +40,8 @@ class EventViewModel @Inject constructor(
     private val appAuth: AppAuth,
 ) : ViewModel() {
 
+    val edited = MutableLiveData(empty)
+
     private val _state = MutableLiveData<FeedModelState>()
     val state: LiveData<FeedModelState>
         get() = _state
@@ -67,6 +69,23 @@ class EventViewModel @Inject constructor(
                 _state.value = FeedModelState(loading = true)
                 repository.get()
                 _state.value = FeedModelState()
+            } catch (e: Exception) {
+                _state.value = FeedModelState(error = true)
+            }
+        }
+    }
+
+    fun edit(event: Event) {
+        edited.value = event
+    }
+
+    fun removeById(id: Int) {
+        viewModelScope.launch {
+            try {
+                appAuth.getToken()?.let { token ->
+                    repository.removeById(token, id)
+                    _state.value = FeedModelState()
+                }
             } catch (e: Exception) {
                 _state.value = FeedModelState(error = true)
             }
