@@ -15,10 +15,10 @@ import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nework.R
-import ru.netology.nework.adapter.loadCircleCrop
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.ActivityMainBinding
 import ru.netology.nework.databinding.NavHeaderMainBinding
+import ru.netology.nework.util.loadCircleCrop
 import ru.netology.nework.viewmodel.AuthViewModel
 import ru.netology.nework.viewmodel.UserViewModel
 import javax.inject.Inject

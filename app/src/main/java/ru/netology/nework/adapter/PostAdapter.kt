@@ -1,22 +1,23 @@
 package ru.netology.nework.adapter
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import ru.netology.nework.R
 import ru.netology.nework.databinding.CardPostBinding
+import ru.netology.nework.dto.AttachmentType
 import ru.netology.nework.dto.FeedItem
 import ru.netology.nework.dto.Post
+import ru.netology.nework.util.load
+import ru.netology.nework.util.loadCircleCrop
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
@@ -25,7 +26,9 @@ interface OnInteractionListener {
     fun onShare(post: Post) {}
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
+    fun onPicture(post: Post) {}
 }
+
 
 class PostAdapter(
     private val onInteractionListener: OnInteractionListener,
@@ -61,6 +64,7 @@ class PostViewHolder(
     private val binding: CardPostBinding,
     private val onInteractionListener: OnInteractionListener,
 ) : RecyclerView.ViewHolder(binding.root) {
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.O)
     fun bind(post: Post) {
         binding.apply {
@@ -74,7 +78,8 @@ class PostViewHolder(
             val publishedTime = OffsetDateTime.parse(post.published).toLocalDateTime()
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy в HH:mm")
             published.text = publishedTime.format(formatter)
-            content.text = post.content
+            content.text =
+                if (post.link != null) (post.content + "\n" + post.link) else post.content
             like.isChecked = post.likedByMe
             like.text = "${countText(post.likeOwnerIds.size)}"
 
@@ -86,6 +91,18 @@ class PostViewHolder(
 
             share.setOnClickListener {
                 onInteractionListener.onShare(post)
+            }
+
+            if (post.attachment?.type == AttachmentType.IMAGE) {
+                postImage.visibility = View.VISIBLE
+                val urlImages = post.attachment.url
+                postImage.load(urlImages)
+            } else {
+                postImage.visibility = View.GONE
+            }
+
+            postImage.setOnClickListener {
+                onInteractionListener.onPicture(post)
             }
 
             menu.setOnClickListener {
@@ -118,18 +135,6 @@ fun countText(count: Int) = when (count) {
     in 999_999 downTo 10_000 -> "${count / 1000}K"
     else -> "${count / 1_000_000}.${count % 1_000_000 / 100_000}M"
 }
-
-fun ImageView.load(url: String, vararg transforms: BitmapTransformation = emptyArray()) =
-    Glide.with(this)
-        .load(url)
-        .error(R.drawable.ic_person)
-        .placeholder(R.drawable.ic_load)
-        .timeout(10_000)
-        .transform(*transforms)
-        .into(this)
-
-fun ImageView.loadCircleCrop(url: String, vararg transforms: BitmapTransformation = emptyArray()) =
-    load(url, CircleCrop(), *transforms)
 
 class PostDiffCallback : DiffUtil.ItemCallback<FeedItem>() {
     override fun areItemsTheSame(oldItem: FeedItem, newItem: FeedItem): Boolean {

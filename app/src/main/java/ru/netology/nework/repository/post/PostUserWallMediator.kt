@@ -11,8 +11,9 @@ import ru.netology.nework.dao.PostRemoteKeyDao
 import ru.netology.nework.db.AppDb
 import ru.netology.nework.entity.PostEntity
 import ru.netology.nework.entity.PostRemoteKeyEntity
+import ru.netology.nework.entity.toEntity
 import ru.netology.nework.error.ApiError
-import java.io.IOException
+
 
 @OptIn(ExperimentalPagingApi::class)
 class PostUserWallMediator(
@@ -28,26 +29,25 @@ class PostUserWallMediator(
     ): MediatorResult {
         try {
             val response = when (loadType) {
-                LoadType.REFRESH -> {
-                    if (postDao.isUserWallEmpty(userId)) {
-                        val id = postRemoteKeyDao.max() ?: return MediatorResult.Success(false)
-                        apiService.getUserWallBefore(userId, id, state.config.pageSize)
-                    } else {
-                        apiService.getUserWallLatest(userId, state.config.initialLoadSize)
-                    }
-                }
-                LoadType.APPEND -> {
-                    val id = postRemoteKeyDao.min() ?: return MediatorResult.Success(false)
+                LoadType.REFRESH -> apiService.getUserWallLatest(userId, state.config.initialLoadSize)
+                LoadType.PREPEND -> {
+                    val id = postRemoteKeyDao.max() ?: return MediatorResult.Success(
+                        endOfPaginationReached = false
+                    )
                     apiService.getUserWallAfter(userId, id, state.config.pageSize)
                 }
-                LoadType.PREPEND -> {
-                    return MediatorResult.Success(false)
+                LoadType.APPEND -> {
+                    val id = postRemoteKeyDao.min() ?: return MediatorResult.Success(
+                        endOfPaginationReached = false
+                    )
+                    apiService.getUserWallBefore(userId, id, state.config.pageSize)
                 }
             }
 
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
+
             val body = response.body() ?: throw ApiError(
                 response.code(),
                 response.message()
@@ -56,44 +56,42 @@ class PostUserWallMediator(
             appDb.withTransaction {
                 when (loadType) {
                     LoadType.REFRESH -> {
-                        if (postDao.isUserWallEmpty(userId)) {
-                            postRemoteKeyDao.insert(
-                                listOf(
-                                    PostRemoteKeyEntity(
-                                        PostRemoteKeyEntity.KeyType.AFTER,
-                                        body.first().id
-                                    ),
-                                    PostRemoteKeyEntity(
-                                        PostRemoteKeyEntity.KeyType.BEFORE,
-                                        body.last().id
-                                    )
-                                )
-                            )
-                        } else {
-                            postRemoteKeyDao.insert(
+                        postRemoteKeyDao.removeAll()
+                        postRemoteKeyDao.insert(
+                            listOf(
                                 PostRemoteKeyEntity(
-                                    PostRemoteKeyEntity.KeyType.AFTER,
-                                    body.first().id
+                                    type = PostRemoteKeyEntity.KeyType.AFTER,
+                                    id = body.first().id,
+                                ),
+                                PostRemoteKeyEntity(
+                                    type = PostRemoteKeyEntity.KeyType.BEFORE,
+                                    id = body.last().id,
                                 ),
                             )
-                        }
+                        )
+                        postDao.removeAll()
                     }
-                    LoadType.PREPEND -> {}
+                    LoadType.PREPEND -> {
+                        postRemoteKeyDao.insert(
+                            PostRemoteKeyEntity(
+                                type = PostRemoteKeyEntity.KeyType.AFTER,
+                                id = body.first().id,
+                            )
+                        )
+                    }
                     LoadType.APPEND -> {
                         postRemoteKeyDao.insert(
                             PostRemoteKeyEntity(
-                                PostRemoteKeyEntity.KeyType.BEFORE,
-                                body.last().id
-                            ),
+                                type = PostRemoteKeyEntity.KeyType.BEFORE,
+                                id = body.last().id,
+                            )
                         )
                     }
                 }
-
-                postDao.insert(body.map(PostEntity::fromDto))
+                postDao.insert(body.toEntity())
             }
-
-            return MediatorResult.Success(body.isEmpty())
-        } catch (e: IOException) {
+            return MediatorResult.Success(endOfPaginationReached = body.isEmpty())
+        } catch (e: Exception) {
             e.printStackTrace()
             return MediatorResult.Error(e)
         }

@@ -33,6 +33,9 @@ interface EventDao {
     @Query("DELETE FROM EventEntity WHERE id = :id")
     suspend fun removeById(id: Int)
 
+    @Query("DELETE FROM EventEntity")
+    suspend fun removeAll()
+
     @Upsert
     suspend fun save(event: EventEntity)
 
@@ -48,5 +51,19 @@ interface EventDao {
         val likeUser = event.likeOwnerIds.toMutableList()
         likeUser.remove(userId)
         save(event.copy(likedByMe = false, likeOwnerIds = likeUser))
+    }
+
+    suspend fun participantById(id: Int, userId: Int) {
+        val event = getEvent(id)
+        val participantUser = event.participantsIds.toMutableList()
+        participantUser.add(userId)
+        save(event.copy(participatedByMe = true, participantsIds = participantUser))
+    }
+
+    suspend fun unParticipantById(id: Int, userId: Int) {
+        val event = getEvent(id)
+        val participantUser = event.participantsIds.toMutableList()
+        participantUser.remove(userId)
+        save(event.copy(participatedByMe = false, participantsIds = participantUser))
     }
 }

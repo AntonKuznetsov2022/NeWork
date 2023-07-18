@@ -71,14 +71,33 @@ class EventsFragment : Fragment() {
             }
 
             override fun onEdit(event: Event) {
-/*                findNavController().navigate(
-                    R.id.action_nav_feed_to_newPostFragment,
-                    Bundle().apply { textArg = event.content })*/
+                /*                findNavController().navigate(
+                                    R.id.action_nav_feed_to_newPostFragment,
+                                    Bundle().apply { textArg = event.content })*/
                 viewModel.edit(event)
             }
 
             override fun onRemove(event: Event) {
                 viewModel.removeById(event.id)
+            }
+
+            override fun onParticipant(event: Event) {
+                if (appAuth.getToken() == null) {
+                    AuthDialog()
+                        .show(parentFragmentManager, null)
+                } else {
+                    if (!event.participatedByMe) {
+                        viewModel.participantById(event.id)
+                    } else {
+                        viewModel.unParticipantById(event.id)
+                    }
+                }
+            }
+
+            override fun onPicture(event: Event) {
+                findNavController().navigate(
+                    R.id.action_global_onPictureFragment,
+                    Bundle().apply { textArg = event.attachment?.url })
             }
         })
 
@@ -89,13 +108,6 @@ class EventsFragment : Fragment() {
                 }
             }
         })
-
-        binding.events.adapter = adapter
-        lifecycleScope.launchWhenCreated {
-            viewModel.data.collectLatest {
-                adapter.submitData(it)
-            }
-        }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.swipeRefresh.isRefreshing = state.refreshing
@@ -108,23 +120,29 @@ class EventsFragment : Fragment() {
             }
         }
 
-        binding.swipeRefresh.setOnRefreshListener {
-            adapter.refresh()
+        binding.events.adapter = adapter
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.data.collectLatest(adapter::submitData)
         }
 
         lifecycleScope.launchWhenCreated {
-            adapter.loadStateFlow.collectLatest {
-                binding.swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
+            adapter.loadStateFlow.collectLatest { state ->
+                binding.swipeRefresh.isRefreshing =
+                    state.refresh is LoadState.Loading ||
+                            state.prepend is LoadState.Loading ||
+                            state.append is LoadState.Loading
             }
         }
 
-        binding.fab.setOnClickListener { view ->
+        binding.swipeRefresh.setOnRefreshListener(adapter::refresh)
+
+        binding.fab.setOnClickListener {
             if (appAuth.getToken() == null) {
                 AuthDialog()
                     .show(parentFragmentManager, null)
             } else {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+                findNavController().navigate(R.id.action_nav_events_to_newEventsFragment)
             }
         }
 

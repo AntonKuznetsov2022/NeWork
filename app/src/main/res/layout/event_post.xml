@@ -111,7 +111,19 @@
         android:checkable="true"
         android:contentDescription="@string/post_like"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrierContent"
+        app:layout_constraintTop_toBottomOf="@id/barrierContent2"
+        tools:text="@tools:sample/us_zipcodes" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/speakers"
+        style="@style/Widget.AppTheme.GroupButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/speakers"
+        app:icon="@drawable/ic_group"
+        app:layout_constraintStart_toEndOf="@+id/like"
+        app:layout_constraintTop_toTopOf="@id/barrierContent2"
         tools:text="@tools:sample/us_zipcodes" />
 
     <com.google.android.material.button.MaterialButton
@@ -120,19 +132,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/post_share"
-        app:layout_constraintStart_toEndOf="@id/like"
-        app:layout_constraintTop_toBottomOf="@id/barrierContent" />
+        app:layout_constraintStart_toEndOf="@id/speakers"
+        app:layout_constraintTop_toBottomOf="@id/barrierContent2" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/members"
-        style="@style/Widget.AppTheme.GroupButton"
+        style="@style/Widget.AppTheme.MembersButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
+        android:checkable="true"
         android:contentDescription="@string/member"
-        app:icon="@drawable/ic_group"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/barrierContent"
+        app:layout_constraintTop_toTopOf="@id/barrierContent2"
         tools:text="@tools:sample/us_zipcodes" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierContent2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="eventImage" />
+
+    <ImageView
+        android:id="@+id/eventImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="center"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/content"
+        tools:src="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

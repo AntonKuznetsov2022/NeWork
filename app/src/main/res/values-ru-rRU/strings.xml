@@ -16,19 +16,34 @@
     //menu
     <string name="menu_edit">Изменить</string>
     <string name="menu_remove">Удалить</string>
-    <string name="add_post">Добавить пост</string>
+    <string name="add">Добавить</string>
 
     //card post
     <string name="post_avatar">Аватар</string>
-    <string name="post_menu">Menu</string>
+    <string name="post_menu">Меню</string>
     <string name="post_like">Нравится</string>
     <string name="post_share">Поделиться</string>
 
-    //new post
-    <string name="enter_text">Введите текст</string>
-
     //event post
     <string name="member">Участники</string>
+    <string name="speakers">Спикеры</string>
+
+    //new event new post
+    <string name="enter_text">Добавьте текст</string>
+    <string name="add_time">Добавить время</string>
+    <string name="add_place">Указать место</string>
+    <string name="add_content">Добавить контент</string>
+    <string name="event_type">Тип мероприятия</string>
+    <string name="add_link">Добавить ссылку</string>
+    <string name="add_user">Добавить пользователей</string>
+    <string name="icon">Иконка</string>
+    <string name="offline">Оффлайн</string>
+    <string name="online">Онлайн</string>
+    <string name="user">Пользователи</string>
+    <string name="content_added">Контент добавлен</string>
+    <string name="user_added">Добавлено пользователей:</string>
+    <string name="content_post_is_empty">Необходимо добавить описание поста</string>
+    <string name="content_event_is_empty">Необходимо добавить описание встречи</string>
 
     //adapter
     <string name="unknown_item_type">Неизвестный тип элемента</string>
@@ -38,6 +53,7 @@
     <string name="error_loading">Что-то пошло не так. Попробуйте позднее</string>
     <string name="retry_loading">Повторить</string>
     <string name="user_registered">Пользователь уже зарегистрирован</string>
+    <string name="on_picture">Изображение</string>
 
     //User
     <string name="login">Логин</string>
@@ -65,6 +81,7 @@
     //My wall
     <string name="login_title">Для просмотра списка постов, необходимо войти в профиль</string>
     <string name="login_button">Войти в профиль</string>
+    <string name="empty_posts">Постов нет.\nЕсли создадите новый пост, то он появится здесь</string>
 
     //dialog
     <string name="log_account">Вход в профиль</string>
@@ -77,5 +94,10 @@
     <string name="text_confirm_save">Спасибо!\nВаши данные сохранены!</string>
     <string name="camera">Камера</string>
     <string name="gallery">Галерея</string>
+    <string name="save_coords">Вы хотите выбрать эти координаты?</string>
 
+    //map
+    <string name="my_location">Моя локация</string>
+    <string name="permission">Требуется предоставить доступ</string>
+    <string name="error_location">Локация пользователя не найдена</string>
 </resources>

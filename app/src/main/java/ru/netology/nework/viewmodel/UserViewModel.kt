@@ -34,7 +34,7 @@ class UserViewModel @Inject constructor(
         loadUsers()
     }
 
-    private fun loadUsers() = viewModelScope.launch {
+    fun loadUsers() = viewModelScope.launch {
         try {
             _stateUser.value = UsersModelState(loading = true)
             repository.getAllUsers()
@@ -52,5 +52,13 @@ class UserViewModel @Inject constructor(
         } catch (e: Exception) {
             _stateUser.value = UsersModelState(error = true)
         }
+    }
+
+    fun addSpeaker(id: Int) = viewModelScope.launch {
+        repository.speakerById(id)
+    }
+
+    fun removeSpeaker(id: Int) = viewModelScope.launch {
+        repository.unSpeakerById(id)
     }
 }

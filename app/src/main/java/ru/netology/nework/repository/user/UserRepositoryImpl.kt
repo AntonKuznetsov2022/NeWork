@@ -14,7 +14,9 @@ import ru.netology.nework.error.NetworkError
 import ru.netology.nework.error.UnknownError
 import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UserRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val apiService: ApiService,
@@ -57,5 +59,13 @@ class UserRepositoryImpl @Inject constructor(
             e.printStackTrace()
             throw UnknownError
         }
+    }
+
+    override suspend fun speakerById(id: Int) {
+        userDao.speakerById(id)
+    }
+
+    override suspend fun unSpeakerById(id: Int) {
+        userDao.unSpeakerById(id)
     }
 }

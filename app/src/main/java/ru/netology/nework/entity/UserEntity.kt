@@ -11,9 +11,10 @@ data class UserEntity(
     val login: String?,
     val name: String?,
     val avatar: String? = null,
+    val isSelected: Boolean = false
 ) {
     fun toDto() =
-        User(id, login, name, avatar)
+        User(id, login, name, avatar, isSelected)
 
     companion object {
         fun fromDto(dto: User) =
@@ -22,6 +23,7 @@ data class UserEntity(
                 dto.login,
                 dto.name,
                 dto.avatar,
+                dto.isSelected,
             )
     }
 }

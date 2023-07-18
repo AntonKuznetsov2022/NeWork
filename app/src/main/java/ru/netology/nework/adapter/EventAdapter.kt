@@ -2,6 +2,7 @@ package ru.netology.nework.adapter
 
 import android.os.Build
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.annotation.RequiresApi
@@ -11,8 +12,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.R
 import ru.netology.nework.databinding.EventPostBinding
+import ru.netology.nework.dto.AttachmentType
 import ru.netology.nework.dto.Event
 import ru.netology.nework.dto.EventItem
+import ru.netology.nework.util.load
+import ru.netology.nework.util.loadCircleCrop
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
@@ -22,6 +26,9 @@ interface OnInteractionListenerEvent {
     fun onShare(event: Event) {}
     fun onEdit(event: Event) {}
     fun onRemove(event: Event) {}
+    fun onParticipant(event: Event) {}
+    fun onSpeaker() {}
+    fun onPicture(event: Event) {}
 }
 
 class EventAdapter(
@@ -73,21 +80,44 @@ class EventViewHolder(
             dateEvent.text = dateTime.format(formatter)
 
             type.text = event.type.toString()
-            content.text = event.content
+            content.text =
+                if (event.link != null) (event.content + "\n" + event.link) else (event.content)
 
             members.text = "${event.participantsIds.size}"
 
-            like.isChecked = event.likedByMe
-            like.text = "${countText(event.likeOwnerIds.size)}"
+            members.isChecked = event.participatedByMe
+            members.setOnClickListener{
+                onInteractionListenerEvent.onParticipant(event)
+            }
 
             menu.isVisible = event.ownedByMe
 
+            like.isChecked = event.likedByMe
+            like.text = "${countText(event.likeOwnerIds.size)}"
             like.setOnClickListener {
                 onInteractionListenerEvent.onLike(event)
             }
 
+            speakers.text = "${countText(event.speakerIds.size)}"
+
             share.setOnClickListener {
                 onInteractionListenerEvent.onShare(event)
+            }
+
+            if (event.attachment?.type == AttachmentType.IMAGE) {
+                eventImage.visibility = View.VISIBLE
+                val urlImages = event.attachment.url
+                eventImage.load(urlImages)
+            } else {
+                eventImage.visibility = View.GONE
+            }
+
+            eventImage.setOnClickListener {
+                onInteractionListenerEvent.onPicture(event)
+            }
+
+            speakers.setOnClickListener{
+                onInteractionListenerEvent.onSpeaker()
             }
 
             menu.setOnClickListener {

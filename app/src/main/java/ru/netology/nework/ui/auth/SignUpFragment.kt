@@ -19,7 +19,7 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.R
-import ru.netology.nework.adapter.loadCircleCrop
+import ru.netology.nework.util.loadCircleCrop
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.FragmentSignUpBinding
 import ru.netology.nework.ui.dialog.BottomSheetImage
@@ -32,9 +32,9 @@ import javax.inject.Inject
 class SignUpFragment : Fragment() {
 
     companion object {
-        private const val CAMERA_OR_GALLERY = "CAMERA_OR_GALLERY"
-        private const val CAMERA = "CAMERA"
-        private const val GALLERY = "GALLERY"
+        internal const val CAMERA_OR_GALLERY = "CAMERA_OR_GALLERY"
+        internal const val CAMERA = "CAMERA"
+        internal const val GALLERY = "GALLERY"
     }
 
     @Inject

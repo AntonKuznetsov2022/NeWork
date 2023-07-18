@@ -35,6 +35,9 @@ interface PostDao {
     @Query("DELETE FROM PostEntity WHERE id = :id")
     suspend fun removeById(id: Int)
 
+    @Query("DELETE FROM PostEntity")
+    suspend fun removeAll()
+
     @Upsert
     suspend fun save(post: PostEntity)
 

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_feed">
+    app:startDestination="@id/nav_feed">
 
     <fragment
         android:id="@+id/nav_feed"
@@ -19,7 +19,11 @@
         android:id="@+id/nav_events"
         android:name="ru.netology.nework.ui.events.EventsFragment"
         android:label="@string/menu_events"
-        tools:layout="@layout/fragment_events" />
+        tools:layout="@layout/fragment_events">
+        <action
+            android:id="@+id/action_nav_events_to_newEventsFragment"
+            app:destination="@id/newEventsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_my_wall"
@@ -55,4 +59,33 @@
         android:id="@+id/exitAppDialog"
         android:name="ru.netology.nework.ui.dialog.ExitAppDialog"
         android:label="ExitAppDialog" />
+    <fragment
+        android:id="@+id/newEventsFragment"
+        android:name="ru.netology.nework.ui.events.NewEventsFragment"
+        android:label="@string/menu_new_event">
+        <action
+            android:id="@+id/action_newEventsFragment_to_usersFragment"
+            app:destination="@id/usersFragment" />
+        <action
+            android:id="@+id/action_newEventsFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="ru.netology.nework.ui.UsersFragment"
+        android:label="@string/user"
+        tools:layout="@layout/fragment_users" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="ru.netology.nework.ui.MapFragment"
+        android:label="@string/add_place"
+        tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/onPictureFragment"
+        android:name="ru.netology.nework.ui.OnPictureFragment"
+        android:label="@string/on_picture"
+        tools:layout="@layout/fragment_on_picture" />
+    <action
+        android:id="@+id/action_global_onPictureFragment"
+        app:destination="@id/onPictureFragment" />
 </navigation>

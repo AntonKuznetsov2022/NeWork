@@ -84,6 +84,12 @@ class MyWallFragment : Fragment() {
             override fun onRemove(post: Post) {
                 viewModel.removeById(post.id)
             }
+
+            override fun onPicture(post: Post) {
+                findNavController().navigate(
+                    R.id.action_global_onPictureFragment,
+                    Bundle().apply { textArg = post.attachment?.url })
+            }
         })
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -95,11 +101,24 @@ class MyWallFragment : Fragment() {
         })
 
         binding.myPosts.adapter = adapter
+
         lifecycleScope.launchWhenCreated {
-            myWallViewModel.data.collectLatest {
-                adapter.submitData(it)
+            myWallViewModel.data.collectLatest(adapter::submitData)
+        }
+
+        //binding.emptyPostTitle.isVisible = myWallViewModel.data.count() != 0
+
+
+        lifecycleScope.launchWhenCreated {
+            adapter.loadStateFlow.collectLatest { state ->
+                binding.swipeRefresh.isRefreshing =
+                    state.refresh is LoadState.Loading ||
+                            state.prepend is LoadState.Loading ||
+                            state.append is LoadState.Loading
             }
         }
+
+        binding.swipeRefresh.setOnRefreshListener(adapter::refresh)
 
         myWallViewModel.state.observe(viewLifecycleOwner) { state ->
             binding.swipeRefresh.isRefreshing = state.refreshing
@@ -109,16 +128,6 @@ class MyWallFragment : Fragment() {
                         myWallViewModel.loadMyPosts()
                     }
                     .show()
-            }
-        }
-
-        binding.swipeRefresh.setOnRefreshListener {
-            adapter.refresh()
-        }
-
-        lifecycleScope.launchWhenCreated {
-            adapter.loadStateFlow.collectLatest {
-                binding.swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
             }
         }
 

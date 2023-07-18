@@ -23,10 +23,10 @@ import javax.inject.Inject
 private val empty = Post(
     id = 0,
     authorId = 0,
-    author = "",
+    author = "name_name",
     authorJob = "",
     content = "",
-    published = "",
+    published = "1900-01-01T01:01:01.111111Z",
     likedByMe = false,
 )
 
@@ -48,28 +48,28 @@ class MyWallViewModel @Inject constructor(
 
     val userId = appAuth.getId()
 
-    val data: Flow<PagingData<FeedItem>> = appAuth.data.flatMapLatest { authState ->
-        repository.dataUserWall(userId)
-            .map { posts ->
+    val data: Flow<PagingData<FeedItem>> = appAuth.data
+        .flatMapLatest { authState ->
+            repository.dataUserWall(userId).map { posts ->
                 posts.map { post ->
                     if (post is Post) {
-                        post.copy(
-                            likedByMe = post.likeOwnerIds.contains(userId),
-                            mentionedMe = post.mentionIds.contains(userId),
-                            ownedByMe = post.authorId == userId,
-                        )
+                        post.copy(ownedByMe = authState?.id == post.authorId)
                     } else {
                         post
                     }
                 }
             }
+        }
+
+    init {
+        loadMyPosts()
     }
 
     fun loadMyPosts() {
         viewModelScope.launch {
             try {
                 _state.value = FeedModelState(loading = true)
-                //repository.getWall(appAuth.getId())
+                repository.getWall(userId)
                 _state.value = FeedModelState()
             } catch (e: Exception) {
                 _state.value = FeedModelState(error = true)

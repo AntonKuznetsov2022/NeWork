@@ -7,20 +7,28 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okio.IOException
 import ru.netology.nework.api.ApiService
 import ru.netology.nework.dao.PostDao
 import ru.netology.nework.dao.PostRemoteKeyDao
 import ru.netology.nework.db.AppDb
+import ru.netology.nework.dto.Attachment
+import ru.netology.nework.dto.AttachmentType
 import ru.netology.nework.dto.FeedItem
+import ru.netology.nework.dto.Media
 import ru.netology.nework.dto.Post
 import ru.netology.nework.entity.PostEntity
 import ru.netology.nework.entity.toEntity
 import ru.netology.nework.error.NetworkError
 import ru.netology.nework.error.UnknownError
 import ru.netology.nework.error.ApiError
+import ru.netology.nework.model.MediaModel
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class PostRepositoryImpl @Inject constructor(
     private val postDao: PostDao,
     private val apiService: ApiService,
@@ -65,7 +73,7 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getWall(userId: Int) {
-/*        try {
+        try {
             val postsResponse = apiService.getUserWall(userId)
             if (!postsResponse.isSuccessful) {
                 throw ApiError(postsResponse.code(), postsResponse.message())
@@ -75,7 +83,7 @@ class PostRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
             throw UnknownError
-        }*/
+        }
     }
 
     override suspend fun save(authToken: String, post: Post) {
@@ -96,6 +104,51 @@ class PostRepositoryImpl @Inject constructor(
             e.printStackTrace()
             throw UnknownError
         }
+    }
+
+    override suspend fun saveWithAttachment(
+        authToken: String,
+        post: Post,
+        mediaModel: MediaModel,
+        attachmentType: AttachmentType
+    ) {
+        try {
+            val media = upload(authToken, mediaModel)
+            val postsResponse = apiService.savePost(
+                authToken,
+                post.copy(
+                    attachment = Attachment(media.url, attachmentType)
+                )
+            )
+
+            if (!postsResponse.isSuccessful) {
+                throw ApiError(postsResponse.code(), postsResponse.message())
+            }
+
+            val body = postsResponse.body() ?: throw ApiError(
+                postsResponse.code(),
+                postsResponse.message()
+            )
+            postDao.insert(PostEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw UnknownError
+        }
+    }
+
+    private suspend fun upload(authToken: String, media: MediaModel): Media {
+        val part = MultipartBody.Part.createFormData(
+            "file", media.file.name, media.file.asRequestBody()
+        )
+
+        val postsResponse = apiService.uploadMedia(authToken, part)
+        if (!postsResponse.isSuccessful) {
+            throw ApiError(postsResponse.code(), postsResponse.message())
+        }
+
+        return requireNotNull(postsResponse.body())
     }
 
     override suspend fun likeById(authToken: String, id: Int, userId: Int) {

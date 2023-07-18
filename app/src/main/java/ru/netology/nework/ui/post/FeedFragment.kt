@@ -80,6 +80,12 @@ class FeedFragment : Fragment() {
             override fun onRemove(post: Post) {
                 viewModel.removeById(post.id)
             }
+
+            override fun onPicture(post: Post) {
+                findNavController().navigate(
+                    R.id.action_global_onPictureFragment,
+                    Bundle().apply { textArg = post.attachment?.url })
+            }
         })
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -89,13 +95,6 @@ class FeedFragment : Fragment() {
                 }
             }
         })
-
-        binding.posts.adapter = adapter
-        lifecycleScope.launchWhenCreated {
-            viewModel.data.collectLatest {
-                adapter.submitData(it)
-            }
-        }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.swipeRefresh.isRefreshing = state.refreshing
@@ -108,15 +107,22 @@ class FeedFragment : Fragment() {
             }
         }
 
-        binding.swipeRefresh.setOnRefreshListener {
-            adapter.refresh()
+        binding.posts.adapter = adapter
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.data.collectLatest(adapter::submitData)
         }
 
         lifecycleScope.launchWhenCreated {
-            adapter.loadStateFlow.collectLatest {
-                binding.swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
+            adapter.loadStateFlow.collectLatest { state ->
+                binding.swipeRefresh.isRefreshing =
+                    state.refresh is LoadState.Loading ||
+                            state.prepend is LoadState.Loading ||
+                            state.append is LoadState.Loading
             }
         }
+
+        binding.swipeRefresh.setOnRefreshListener(adapter::refresh)
 
         binding.fab.setOnClickListener {
             if (appAuth.getToken() == null) {

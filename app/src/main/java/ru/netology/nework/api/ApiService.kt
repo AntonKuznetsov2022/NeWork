@@ -6,6 +6,7 @@ import retrofit2.Response
 import retrofit2.http.*
 import ru.netology.nework.dto.Event
 import ru.netology.nework.dto.Job
+import ru.netology.nework.dto.Media
 import ru.netology.nework.dto.Post
 import ru.netology.nework.dto.User
 import ru.netology.nework.model.AuthModel
@@ -41,7 +42,7 @@ interface ApiService {
     @DELETE("posts/{post_id}/likes ")
     suspend fun unlikePostById(
         @Header("auth") auth: String,
-        @Path("post_id") id: Int
+        @Path("post_id") id: Int,
     ): Response<Post>
 
     @DELETE("posts/{post_id}")
@@ -82,6 +83,18 @@ interface ApiService {
     suspend fun unlikeEventById(
         @Header("auth") auth: String,
         @Path("event_id") id: Int,
+    ): Response<Event>
+
+    @POST("events/{event_id}/participants")
+    suspend fun participantById(
+        @Header("auth") auth: String,
+        @Path("event_id") id: Int
+    ): Response<Event>
+
+    @DELETE("events/{event_id}/participants")
+    suspend fun unParticipantById(
+        @Header("auth") auth: String,
+        @Path("event_id") id: Int
     ): Response<Event>
 
     @DELETE("events/{event_id}")
@@ -157,4 +170,12 @@ interface ApiService {
         @Part("name") name: RequestBody,
         @Part media: MultipartBody.Part,
     ): Response<AuthModel>
+
+    //media
+    @Multipart
+    @POST("media")
+    suspend fun uploadMedia(
+        @Header("auth") auth: String,
+        @Part file: MultipartBody.Part
+    ): Response<Media>
 }
