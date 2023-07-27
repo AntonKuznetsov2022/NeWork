@@ -37,7 +37,11 @@
     <fragment
         android:id="@+id/newPostFragment"
         android:name="ru.netology.nework.ui.post.NewPostFragment"
-        android:label="@string/menu_new_post" />
+        android:label="@string/menu_new_post">
+        <action
+            android:id="@+id/action_newPostFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
     <fragment
         android:id="@+id/signInFragment"
         android:name="ru.netology.nework.ui.auth.SignInFragment"
@@ -78,7 +82,7 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="ru.netology.nework.ui.MapFragment"
-        android:label="@string/add_place"
+        android:label="@string/map"
         tools:layout="@layout/fragment_map" />
     <fragment
         android:id="@+id/onPictureFragment"
@@ -88,4 +92,19 @@
     <action
         android:id="@+id/action_global_onPictureFragment"
         app:destination="@id/onPictureFragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="ru.netology.nework.ui.ProfileFragment"
+        android:label="@string/profile">
+        <action
+            android:id="@+id/action_profileFragment_to_newJobFragment"
+            app:destination="@id/newJobFragment" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_profileFragment"
+        app:destination="@id/profileFragment" />
+    <fragment
+        android:id="@+id/newJobFragment"
+        android:name="ru.netology.nework.ui.NewJobFragment"
+        android:label="@string/menu_new_job" />
 </navigation>

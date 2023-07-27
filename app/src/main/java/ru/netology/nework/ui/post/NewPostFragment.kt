@@ -1,6 +1,6 @@
 package ru.netology.nework.ui.post
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -25,6 +25,7 @@ import ru.netology.nework.R
 import ru.netology.nework.databinding.FragmentNewPostBinding
 import ru.netology.nework.ui.auth.SignUpFragment
 import ru.netology.nework.ui.dialog.BottomSheetImage
+import ru.netology.nework.ui.dialog.ExitPostEventDialog
 import ru.netology.nework.util.AndroidUtils
 import ru.netology.nework.util.StringArg
 import ru.netology.nework.viewmodel.PostViewModel
@@ -33,7 +34,6 @@ import ru.netology.nework.viewmodel.PostViewModel
 @ExperimentalCoroutinesApi
 class NewPostFragment : Fragment() {
     lateinit var binding: FragmentNewPostBinding
-    private var APP_NAME = "editText"
 
     companion object {
         var Bundle.textArg: String? by StringArg
@@ -47,27 +47,7 @@ class NewPostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentNewPostBinding.inflate(inflater, container, false)
-
         super.onCreate(savedInstanceState)
-        val editText = context?.getSharedPreferences(APP_NAME, Context.MODE_PRIVATE)
-        if (editText != null) {
-            binding.editText.setText(editText.getString(APP_NAME, ""))
-        }
-
-        if (arguments?.textArg != null) {
-            with(binding.editText) {
-                requestFocus()
-                setSelection(text.toString().length)
-            }
-        }
-
-        arguments?.textArg
-            ?.let(binding.editText::setText)
-
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            saveText(binding.editText.text.toString())
-            findNavController().navigateUp()
-        }
 
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -84,7 +64,6 @@ class NewPostFragment : Fragment() {
                                 Snackbar.LENGTH_LONG
                             ).show()
                         } else {
-                            saveText("")
                             viewModel.changeContent(binding.editText.text.toString())
                             viewModel.changeLink(binding.editLink.text.toString())
                             viewModel.save()
@@ -102,14 +81,67 @@ class NewPostFragment : Fragment() {
             viewModel.loadPosts()
         }
 
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            val value = arguments?.getString("open")
+            AndroidUtils.hideKeyboard(requireView())
+            ExitPostEventDialog.newInstance(value)
+                .show(parentFragmentManager, null)
+        }
+
+        bindEditPost()
+
+        bindAddPlace()
         bindAddContent()
 
         return binding.root
     }
 
-    fun saveText(text: String) {
-        val editText = context?.getSharedPreferences(APP_NAME, Context.MODE_PRIVATE)
-        editText?.edit()?.apply { putString(APP_NAME, text).apply() }
+    private fun bindEditPost() {
+        binding.apply {
+            editText.setText(viewModel.edited.value?.content)
+            editLink.setText(viewModel.edited.value?.link)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun bindAddPlace() {
+        binding.apply {
+            addPlaceBut.setOnClickListener {
+                if (viewModel.edited.value?.coords != null) {
+                    val bundle = Bundle().apply {
+                        putString("open", "POST")
+                        putDouble("lat", viewModel.edited.value?.coords!!.lat)
+                        putDouble("long", viewModel.edited.value?.coords!!.long)
+                    }
+                    findNavController().navigate(
+                        R.id.action_newPostFragment_to_mapFragment,
+                        bundle
+                    )
+                } else {
+                    val bundle = Bundle().apply {
+                        putString("open", "POST")
+                    }
+                    findNavController().navigate(
+                        R.id.action_newPostFragment_to_mapFragment,
+                        bundle
+                    )
+                }
+            }
+
+            if (viewModel.edited.value?.coords != null) {
+                addPlaceBut.text =
+                    "${viewModel.edited.value!!.coords?.lat.toString().take(9)}  ||  ${
+                        viewModel.edited.value!!.coords?.long.toString().take(9)
+                    }"
+                deletePlaceBut.isVisible = true
+            }
+
+            deletePlaceBut.setOnClickListener {
+                viewModel.saveCoords(null, null)
+                addPlaceBut.text = getText(R.string.add_place)
+                deletePlaceBut.isVisible = false
+            }
+        }
     }
 
     private fun bindAddContent() {
@@ -137,6 +169,10 @@ class NewPostFragment : Fragment() {
                     findNavController().navigate(
                         R.id.action_global_onPictureFragment,
                         Bundle().apply { textArg = viewModel.media.value?.uri.toString() })
+                } else if (viewModel.edited.value?.attachment != null) {
+                    findNavController().navigate(
+                        R.id.action_global_onPictureFragment,
+                        Bundle().apply { textArg = viewModel.edited.value?.attachment?.url })
                 } else {
                     BottomSheetImage()
                         .show(parentFragmentManager, null)
@@ -144,7 +180,7 @@ class NewPostFragment : Fragment() {
             }
 
             viewModel.media.observe(viewLifecycleOwner) { media ->
-                if (media != null) {
+                if (media != null || viewModel.edited.value?.attachment != null) {
                     addContentBut.text = getText(R.string.content_added)
                     deleteContentBut.isVisible = true
                 }
@@ -152,6 +188,7 @@ class NewPostFragment : Fragment() {
 
             deleteContentBut.setOnClickListener {
                 viewModel.clearPhoto()
+                viewModel.edited.value = viewModel.edited.value?.copy(attachment = null)
                 addContentBut.text = getText(R.string.add_content)
                 deleteContentBut.isVisible = false
             }

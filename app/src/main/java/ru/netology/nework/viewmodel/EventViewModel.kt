@@ -87,8 +87,13 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    fun edit(event: Event) {
+    fun editEvent(event: Event) = viewModelScope.launch {
         edited.value = event
+    }
+
+    fun cancelEditEvent() = viewModelScope.launch {
+        edited.value = empty
+        clearPhoto()
     }
 
     fun changeContent(content: String) {

@@ -136,6 +136,15 @@
         app:layout_constraintTop_toBottomOf="@id/barrierContent2" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/coords"
+        style="@style/Widget.AppTheme.CoordsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/post_coords"
+        app:layout_constraintStart_toEndOf="@id/share"
+        app:layout_constraintTop_toBottomOf="@id/barrierContent2" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/members"
         style="@style/Widget.AppTheme.MembersButton"
         android:layout_width="wrap_content"

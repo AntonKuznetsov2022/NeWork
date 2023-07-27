@@ -1,6 +1,5 @@
 package ru.netology.nework.ui.dialog
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
@@ -11,54 +10,39 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nework.R
-import ru.netology.nework.databinding.DialogSaveCoordsBinding
 import ru.netology.nework.viewmodel.EventViewModel
+import ru.netology.nework.viewmodel.JobViewModel
 import ru.netology.nework.viewmodel.PostViewModel
 
 @AndroidEntryPoint
 @ExperimentalCoroutinesApi
-class SaveCoordsDialog : DialogFragment() {
-
-    lateinit var binding: DialogSaveCoordsBinding
+class ExitPostEventDialog : DialogFragment() {
 
     companion object {
-        private const val POST = "POST"
-        private const val LAT_KEY = "LAT_KEY"
-        private const val LONG_KEY = "LONG_KEY"
-        fun newInstance(lat: Double, long: Double, post: String?) = SaveCoordsDialog().apply {
-            arguments = bundleOf(LAT_KEY to lat, LONG_KEY to long, POST to post)
+        private const val VALUE = "POST"
+        fun newInstance(value: String?) = ExitPostEventDialog().apply {
+            arguments = bundleOf(VALUE to value)
         }
     }
 
     private val eventViewModel: EventViewModel by activityViewModels()
     private val postViewModel: PostViewModel by activityViewModels()
+    private val jobViewModel: JobViewModel by activityViewModels()
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
-        binding = DialogSaveCoordsBinding.inflate(layoutInflater)
-        val lat = requireArguments().getDouble(LAT_KEY).toString().take(9)
-        val long = requireArguments().getDouble(LONG_KEY).toString().take(9)
-        binding.tvCoords.text = "$lat  ||  $long"
-
         return AlertDialog.Builder(requireContext())
-            .setView(binding.root)
+            .setView(R.layout.dialog_exit_post_event)
             .setNeutralButton(R.string.no) { dialog, _ ->
                 dialog.cancel()
                 return@setNeutralButton
             }
             .setPositiveButton(R.string.yes) { _, _ ->
-
-                if (requireArguments().getString(POST) != null) {
-                    postViewModel.saveCoords(
-                        lat.toDouble(),
-                        long.toDouble()
-                    )
+                if (requireArguments().getString(VALUE) == "POST") {
+                    postViewModel.cancelEditPost()
+                } else if (requireArguments().getString(VALUE) == "EVENT") {
+                    eventViewModel.cancelEditEvent()
                 } else {
-                    eventViewModel.saveCoords(
-                        lat.toDouble(),
-                        long.toDouble()
-                    )
+                    jobViewModel.cancelEditJob()
                 }
                 findNavController().navigateUp()
                 return@setPositiveButton

@@ -6,6 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.netology.nework.repository.event.EventRepository
 import ru.netology.nework.repository.event.EventRepositoryImpl
+import ru.netology.nework.repository.job.JobRepository
+import ru.netology.nework.repository.job.JobRepositoryImpl
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -18,4 +20,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindEventRepository(impl: EventRepositoryImpl): EventRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindJobRepository(impl: JobRepositoryImpl): JobRepository
 }

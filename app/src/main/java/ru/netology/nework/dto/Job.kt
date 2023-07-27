@@ -7,4 +7,5 @@ data class Job (
     val start: String,
     val finish: String? = null,
     val link: String? = null,
+    val ownedByMe: Boolean = false,
 )

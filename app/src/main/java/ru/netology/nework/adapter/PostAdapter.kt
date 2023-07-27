@@ -27,6 +27,8 @@ interface OnInteractionListener {
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
     fun onPicture(post: Post) {}
+    fun onCoords(post: Post) {}
+    fun onProfile(post: Post) {}
 }
 
 
@@ -93,16 +95,29 @@ class PostViewHolder(
                 onInteractionListener.onShare(post)
             }
 
+            coords.isVisible = post.coords != null
+
+            coords.setOnClickListener {
+                onInteractionListener.onCoords(post)
+            }
+
             if (post.attachment?.type == AttachmentType.IMAGE) {
                 postImage.visibility = View.VISIBLE
-                val urlImages = post.attachment.url
-                postImage.load(urlImages)
+                postImage.load(post.attachment.url)
             } else {
                 postImage.visibility = View.GONE
             }
 
             postImage.setOnClickListener {
                 onInteractionListener.onPicture(post)
+            }
+
+            avatar.setOnClickListener {
+                onInteractionListener.onProfile(post)
+            }
+
+            author.setOnClickListener {
+                onInteractionListener.onProfile(post)
             }
 
             menu.setOnClickListener {

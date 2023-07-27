@@ -132,13 +132,13 @@ interface ApiService {
     suspend fun getMyJobs(@Header("auth") auth: String): Response<List<Job>>
 
     @GET("{user_id}/jobs/")
-    suspend fun getJobsById(@Path("user_id") id: String): Response<List<Job>>
+    suspend fun getJobsById(@Path("user_id") id: Int): Response<List<Job>>
 
     @POST("my/jobs/")
     suspend fun saveJob(@Header("auth") auth: String, @Body job: Job): Response<Job>
 
     @DELETE("my/jobs/{job_id}/")
-    suspend fun removeJob(@Header("auth") auth: String, @Path("job_id") id: String): Response<Unit>
+    suspend fun removeJob(@Header("auth") auth: String, @Path("job_id") id: Int): Response<Unit>
 
     //user
     @GET("users")

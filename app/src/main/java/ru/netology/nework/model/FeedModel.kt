@@ -12,6 +12,12 @@ data class UsersModelState(
     val refreshing: Boolean = false,
 )
 
+data class JobModelState(
+    val loading: Boolean = false,
+    val error: Boolean = false,
+    val refreshing: Boolean = false,
+)
+
 data class SignInModelState(
     val signInError: Boolean = false,
     val signInWrong: Boolean = false,

@@ -18,12 +18,14 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val repository: UserRepositoryImpl,
-    private val appAuth: AppAuth,
+    private val appAuth: AppAuth
 ) : ViewModel() {
 
     private val _stateUser = MutableLiveData<UsersModelState>()
     val stateUser: LiveData<UsersModelState>
         get() = _stateUser
+
+    val userSignIn = MutableLiveData<User>()
 
     val user = MutableLiveData<User>()
 
@@ -35,8 +37,8 @@ class UserViewModel @Inject constructor(
     }
 
     fun loadUsers() = viewModelScope.launch {
+        _stateUser.value = UsersModelState(loading = true)
         try {
-            _stateUser.value = UsersModelState(loading = true)
             repository.getAllUsers()
             _stateUser.value = UsersModelState()
         } catch (e: Exception) {
@@ -44,10 +46,20 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun getUserById() = viewModelScope.launch {
+    fun getUserSignIn() = viewModelScope.launch {
+        _stateUser.value = UsersModelState(loading = true)
         try {
-            _stateUser.value = UsersModelState(loading = true)
-            user.value = repository.getUserById(appAuth.getId())
+            userSignIn.value = repository.getUserById(appAuth.getId())
+            _stateUser.value = UsersModelState()
+        } catch (e: Exception) {
+            _stateUser.value = UsersModelState(error = true)
+        }
+    }
+
+    fun getUserById(id: Int) = viewModelScope.launch {
+        _stateUser.value = UsersModelState(loading = true)
+        try {
+            user.value = repository.getUserById(id)
             _stateUser.value = UsersModelState()
         } catch (e: Exception) {
             _stateUser.value = UsersModelState(error = true)

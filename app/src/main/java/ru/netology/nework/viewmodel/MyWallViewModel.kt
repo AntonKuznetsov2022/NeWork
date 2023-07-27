@@ -20,15 +20,6 @@ import ru.netology.nework.repository.post.PostRepository
 import ru.netology.nework.util.SingleLiveEvent
 import javax.inject.Inject
 
-private val empty = Post(
-    id = 0,
-    authorId = 0,
-    author = "name_name",
-    authorJob = "",
-    content = "",
-    published = "1900-01-01T01:01:01.111111Z",
-    likedByMe = false,
-)
 
 @HiltViewModel
 @ExperimentalCoroutinesApi
@@ -37,7 +28,6 @@ class MyWallViewModel @Inject constructor(
     private val appAuth: AppAuth,
 ) : ViewModel() {
 
-    val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
@@ -46,9 +36,7 @@ class MyWallViewModel @Inject constructor(
     val state: LiveData<FeedModelState>
         get() = _state
 
-    val userId = appAuth.getId()
-
-    val data: Flow<PagingData<FeedItem>> = appAuth.data
+    fun data (userId: Int): Flow<PagingData<FeedItem>> = appAuth.data
         .flatMapLatest { authState ->
             repository.dataUserWall(userId).map { posts ->
                 posts.map { post ->
@@ -61,14 +49,10 @@ class MyWallViewModel @Inject constructor(
             }
         }
 
-    init {
-        loadMyPosts()
-    }
-
-    fun loadMyPosts() {
+    fun loadPostsById(userId: Int) {
         viewModelScope.launch {
+            _state.value = FeedModelState(loading = true)
             try {
-                _state.value = FeedModelState(loading = true)
                 repository.getWall(userId)
                 _state.value = FeedModelState()
             } catch (e: Exception) {

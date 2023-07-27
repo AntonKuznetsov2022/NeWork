@@ -35,6 +35,14 @@
         <item name="android:minHeight">@dimen/card_post_48</item>
     </style>
 
+    <style name="Widget.AppTheme.CoordsButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="iconTint">@color/color_tint</item>
+        <item name="icon">@drawable/ic_place</item>
+        <item name="android:textColor">?attr/colorControlNormal</item>
+        <item name="android:minWidth">@dimen/card_post_48</item>
+        <item name="android:minHeight">@dimen/card_post_48</item>
+    </style>
+
     <style name="Widget.AppTheme.GroupButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="iconTint">@color/color_tint</item>
         <item name="icon">@drawable/ic_group</item>

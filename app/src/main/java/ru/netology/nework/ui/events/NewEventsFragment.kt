@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TimePicker
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.core.view.MenuProvider
@@ -29,12 +30,14 @@ import ru.netology.nework.databinding.FragmentNewEventBinding
 import ru.netology.nework.dto.EventType
 import ru.netology.nework.ui.auth.SignUpFragment
 import ru.netology.nework.ui.dialog.BottomSheetImage
+import ru.netology.nework.ui.dialog.ExitPostEventDialog
 import ru.netology.nework.ui.post.NewPostFragment.Companion.textArg
 import ru.netology.nework.util.AndroidUtils
 import ru.netology.nework.viewmodel.EventViewModel
 import ru.netology.nework.viewmodel.UserViewModel
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
@@ -66,7 +69,7 @@ class NewEventsFragment : Fragment() {
                         if (binding.editText.text.isEmpty()) {
                             Snackbar.make(
                                 binding.root,
-                                getString(R.string.content_event_is_empty),
+                                getString(R.string.content_post_is_empty),
                                 Snackbar.LENGTH_LONG
                             ).show()
                         } else {
@@ -88,6 +91,15 @@ class NewEventsFragment : Fragment() {
             userViewModel.loadUsers()
         }
 
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            val value = arguments?.getString("open")
+            AndroidUtils.hideKeyboard(requireView())
+            ExitPostEventDialog.newInstance(value)
+                .show(parentFragmentManager, null)
+        }
+
+        bindEditEvent()
+
         bindAddData()
         bindAddUser()
         bindAddPlace()
@@ -95,6 +107,20 @@ class NewEventsFragment : Fragment() {
         bindAddType()
 
         return binding.root
+    }
+
+    private fun bindEditEvent() {
+        binding.apply {
+            editText.setText(viewModel.edited.value?.content)
+            editLink.setText(viewModel.edited.value?.link)
+
+            addTypeBut.text =
+                if (viewModel.edited.value?.type == EventType.ONLINE) {
+                    getString(R.string.online)
+                } else {
+                    getString(R.string.offline)
+                }
+        }
     }
 
     @SuppressLint("NewApi")
@@ -106,9 +132,20 @@ class NewEventsFragment : Fragment() {
                 SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.uuuuuu", Locale.getDefault())
             val formatterShow = SimpleDateFormat("dd.MM.yyyy в HH:mm", Locale.getDefault())
 
-            addTimeBut.text = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy в HH:mm"))
+            val dateTime = arguments?.getString("dateTime")
+
+            if (dateTime != null) {
+                addTimeBut.text =
+                    OffsetDateTime.parse(dateTime).toLocalDateTime()
+                        .format(DateTimeFormatter.ofPattern("dd.MM.yyyy в HH:mm"))
+            } else {
+                addTimeBut.text =
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy в HH:mm"))
+                viewModel.saveDatetime(LocalDateTime.now().toString())
+            }
 
             addTimeBut.setOnClickListener {
+                AndroidUtils.hideKeyboard(requireView())
                 DatePickerDialog(
                     requireContext(),
                     object : DatePickerDialog.OnDateSetListener {
@@ -131,7 +168,8 @@ class NewEventsFragment : Fragment() {
                                             set(Calendar.HOUR_OF_DAY, hourOfDay)
                                             set(Calendar.MINUTE, minute)
                                         }
-                                        addTimeBut.text = formatterShow.format(calendar.timeInMillis)
+                                        addTimeBut.text =
+                                            formatterShow.format(calendar.timeInMillis)
                                         viewModel.saveDatetime(
                                             formatterDate.format(calendar.timeInMillis)
                                         )
@@ -148,7 +186,6 @@ class NewEventsFragment : Fragment() {
                     calendar.get(Calendar.DAY_OF_MONTH)
                 ).show()
             }
-
         }
     }
 
@@ -156,6 +193,9 @@ class NewEventsFragment : Fragment() {
     private fun bindAddUser() {
         binding.apply {
             addUserBut.setOnClickListener {
+                viewModel.edited.value?.speakerIds?.forEach {
+                    userViewModel.addSpeaker(it)
+                }
                 findNavController().navigate(R.id.action_newEventsFragment_to_usersFragment)
             }
 
@@ -233,6 +273,10 @@ class NewEventsFragment : Fragment() {
                     findNavController().navigate(
                         R.id.action_global_onPictureFragment,
                         Bundle().apply { textArg = viewModel.media.value?.uri.toString() })
+                } else if (viewModel.edited.value?.attachment != null) {
+                    findNavController().navigate(
+                        R.id.action_global_onPictureFragment,
+                        Bundle().apply { textArg = viewModel.edited.value?.attachment?.url })
                 } else {
                     BottomSheetImage()
                         .show(parentFragmentManager, null)
@@ -240,7 +284,7 @@ class NewEventsFragment : Fragment() {
             }
 
             viewModel.media.observe(viewLifecycleOwner) { media ->
-                if (media != null) {
+                if (media != null || viewModel.edited.value?.attachment != null) {
                     addContentBut.text = getText(R.string.content_added)
                     deleteContentBut.isVisible = true
                 }
@@ -248,6 +292,7 @@ class NewEventsFragment : Fragment() {
 
             deleteContentBut.setOnClickListener {
                 viewModel.clearPhoto()
+                viewModel.edited.value = viewModel.edited.value?.copy(attachment = null)
                 addContentBut.text = getText(R.string.add_content)
                 deleteContentBut.isVisible = false
             }
@@ -275,9 +320,9 @@ class NewEventsFragment : Fragment() {
     private fun bindAddType() {
         binding.apply {
             addTypeBut.setOnClickListener {
-                if (addTypeBut.text == getString(R.string.online)) {
-                    addTypeBut.text = getString(R.string.offline)
+                if (viewModel.edited.value?.type == EventType.ONLINE) {
                     viewModel.changeEventType(EventType.OFFLINE)
+                    addTypeBut.text = getString(R.string.offline)
                 } else {
                     addTypeBut.text = getString(R.string.online)
                     viewModel.changeEventType(EventType.ONLINE)

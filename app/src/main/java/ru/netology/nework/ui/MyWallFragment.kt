@@ -37,6 +37,12 @@ class MyWallFragment : Fragment() {
     private val viewModel: PostViewModel by activityViewModels()
     private val myWallViewModel: MyWallViewModel by activityViewModels()
 
+    companion object {
+        private const val VALUE = "POST"
+        private const val OPEN = "open"
+        private const val SEE = "see"
+    }
+
     @Inject
     lateinit var appAuth: AppAuth
 
@@ -75,10 +81,13 @@ class MyWallFragment : Fragment() {
             }
 
             override fun onEdit(post: Post) {
+                viewModel.editPost(post)
+                val bundle = Bundle().apply {
+                    putString(OPEN, VALUE)
+                }
                 findNavController().navigate(
-                    R.id.action_nav_my_wall_to_newPostFragment,
-                    Bundle().apply { textArg = post.content })
-                viewModel.edit(post)
+                    R.id.action_nav_my_wall_to_newPostFragment, bundle
+                )
             }
 
             override fun onRemove(post: Post) {
@@ -89,6 +98,25 @@ class MyWallFragment : Fragment() {
                 findNavController().navigate(
                     R.id.action_global_onPictureFragment,
                     Bundle().apply { textArg = post.attachment?.url })
+            }
+
+            override fun onCoords(post: Post) {
+                val bundle = Bundle().apply {
+                    putString(SEE, VALUE)
+                    putDouble("lat", post.coords!!.lat)
+                    putDouble("long", post.coords.long)
+                }
+                findNavController().navigate(
+                    R.id.mapFragment,
+                    bundle
+                )
+            }
+
+            override fun onProfile(post: Post) {
+                val bundle = Bundle().apply {
+                    putInt("userId", post.authorId)
+                }
+                findNavController().navigate(R.id.action_global_profileFragment, bundle)
             }
         })
 
@@ -103,11 +131,8 @@ class MyWallFragment : Fragment() {
         binding.myPosts.adapter = adapter
 
         lifecycleScope.launchWhenCreated {
-            myWallViewModel.data.collectLatest(adapter::submitData)
+            myWallViewModel.data(appAuth.getId()).collectLatest(adapter::submitData)
         }
-
-        //binding.emptyPostTitle.isVisible = myWallViewModel.data.count() != 0
-
 
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow.collectLatest { state ->
@@ -115,6 +140,8 @@ class MyWallFragment : Fragment() {
                     state.refresh is LoadState.Loading ||
                             state.prepend is LoadState.Loading ||
                             state.append is LoadState.Loading
+                binding.emptyPostTitle.isVisible =
+                    adapter.itemCount < 1
             }
         }
 
@@ -125,7 +152,7 @@ class MyWallFragment : Fragment() {
             if (state.error) {
                 Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
                     .setAction(R.string.retry_loading) {
-                        myWallViewModel.loadMyPosts()
+                        myWallViewModel.loadPostsById(appAuth.getId())
                     }
                     .show()
             }

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:padding="@dimen/card_post_8">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -19,7 +20,6 @@
                 android:id="@+id/editText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/card_post_8"
                 android:background="@android:color/transparent"
                 android:gravity="start|top"
                 android:hint="@string/enter_text"
@@ -30,7 +30,6 @@
                 android:id="@+id/editLink"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/card_post_8"
                 android:background="@android:color/transparent"
                 android:gravity="start|top"
                 android:hint="@string/add_link"
@@ -48,20 +47,63 @@
                 android:layout_margin="@dimen/card_post_8">
 
                 <ImageView
-                    android:id="@+id/iconAddContent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:id="@+id/iconAddPlace"
                     android:layout_width="@dimen/avatar"
                     android:layout_height="@dimen/avatar"
                     android:contentDescription="@string/icon"
-                    android:src="@drawable/ic_attach_file" />
+                    android:src="@drawable/ic_place"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/addPlaceBut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/card_post_8"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="@string/add_place"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/card_post_16"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iconAddPlace"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="SpUsage" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/deletePlaceBut"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="@dimen/avatar"
+                    android:layout_height="@dimen/avatar"
+                    android:contentDescription="@string/icon"
+                    android:visibility="invisible"
+                    app:icon="@drawable/ic_delete"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/card_post_8">
+
+                <ImageView
+                    android:id="@+id/iconAddContent"
+                    android:layout_width="@dimen/avatar"
+                    android:layout_height="@dimen/avatar"
+                    android:contentDescription="@string/icon"
+                    android:src="@drawable/ic_attach_file"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/addContentBut"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/iconAddContent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="SpUsage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/card_post_8"
@@ -69,18 +111,22 @@
                     android:singleLine="true"
                     android:text="@string/add_content"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/card_post_16" />
+                    android:textSize="@dimen/card_post_16"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/iconAddContent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="SpUsage" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/deleteContentBut"
                     style="@style/Widget.Material3.Button.TextButton"
-                    app:icon="@drawable/ic_delete"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     android:layout_width="@dimen/avatar"
                     android:layout_height="@dimen/avatar"
                     android:contentDescription="@string/icon"
-                    android:visibility="invisible" />
+                    android:visibility="invisible"
+                    app:icon="@drawable/ic_delete"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

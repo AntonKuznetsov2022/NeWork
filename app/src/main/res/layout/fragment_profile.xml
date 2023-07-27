@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/card_post_8">
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/card_post_48"
+            android:layout_height="@dimen/card_post_48"
+            android:contentDescription="@string/post_avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/card_post_8"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="@dimen/card_post_16"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/login"
+            app:layout_constraintStart_toEndOf="@id/avatar"
+            app:layout_constraintTop_toTopOf="@+id/avatar"
+            tools:ignore="SpUsage"
+            tools:text="@tools:sample/lorem[2]" />
+
+        <TextView
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/card_post_8"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="@dimen/card_post_16"
+            app:layout_constraintStart_toEndOf="@id/avatar"
+            app:layout_constraintTop_toBottomOf="@+id/userName"
+            tools:ignore="SpUsage"
+            tools:text="@tools:sample/lorem[2]" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="avatar" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"
+            android:layout_marginTop="@dimen/card_post_8"
+            app:layout_constraintBottom_toTopOf="@id/job_list"
+            tools:layout_editor_absoluteX="8dp" />
+
+        <TextView
+            android:id="@+id/empty_job_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_jobs"
+            android:textColor="@color/black"
+            android:textSize="@dimen/card_post_16"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/job_list"
+            app:layout_constraintEnd_toEndOf="@+id/job_list"
+            app:layout_constraintStart_toStartOf="@+id/job_list"
+            app:layout_constraintTop_toBottomOf="@+id/view"
+            tools:ignore="SpUsage" />
+
+        <ProgressBar
+            android:id="@+id/load_job"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/job_list"
+            app:layout_constraintEnd_toEndOf="@+id/job_list"
+            app:layout_constraintStart_toStartOf="@+id/job_list"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/job_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/card_post_8"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier"
+            tools:listitem="@layout/card_job" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="16dp"
+        android:importantForAccessibility="no"
+        app:srcCompat="@drawable/ic_work" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

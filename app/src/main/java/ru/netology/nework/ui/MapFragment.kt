@@ -76,8 +76,11 @@ class MapFragment : Fragment() {
         override fun onMapTap(map: Map, point: Point) = Unit
 
         override fun onMapLongTap(map: Map, point: Point) {
-            SaveCoordsDialog.newInstance(point.latitude, point.longitude)
-                .show(childFragmentManager, null)
+            if (arguments?.getString("see") == null) {
+                val value = arguments?.getString("open")
+                SaveCoordsDialog.newInstance(point.latitude, point.longitude, value)
+                    .show(childFragmentManager, null)
+            }
         }
     }
 
@@ -106,7 +109,7 @@ class MapFragment : Fragment() {
         val lat = arguments?.getDouble("lat")
         val long = arguments?.getDouble("long")
 
-        if (lat != null && long != null) {
+        if (lat != null && lat != 0.0 && long != null && long != 0.0) {
             mapView.map.mapObjects.clear()
             moveTo(Point(lat, long), zoom, azimuth, tilt)
             addMarker(Point(lat, long))

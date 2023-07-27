@@ -15,13 +15,14 @@ interface OnInteractionListenerUser {
 }
 
 class UserAdapter(
-    private val onInteractionListenerUser: OnInteractionListenerUser
+    private val onInteractionListenerUser: OnInteractionListenerUser,
+    private val item: Int,
 ) : ListAdapter<User, UserViewHolder>(UserDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding =
             CardUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return UserViewHolder(binding, onInteractionListenerUser)
+        return UserViewHolder(binding, onInteractionListenerUser, item)
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
@@ -33,21 +34,35 @@ class UserAdapter(
 class UserViewHolder(
     private val binding: CardUserBinding,
     private val onInteractionListenerUser: OnInteractionListenerUser,
+    private val item: Int,
 ) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(user: User) {
-        binding.apply {
-            val urlAvatars = "${user.avatar}"
-            avatar.loadCircleCrop(urlAvatars)
-            userName.text = user.name
+        when(item) {
+            0 -> {
+                binding.apply {
+                    val urlAvatars = "${user.avatar}"
+                    avatar.loadCircleCrop(urlAvatars)
+                    userName.text = user.name
 
-            checkUser.isVisible = true
-            checkUser.isChecked = user.isSelected
+                    checkUser.isChecked = user.isSelected
 
-            checkUser.setOnClickListener {
-                onInteractionListenerUser.onClick(user)
+                    checkUser.setOnClickListener {
+                        onInteractionListenerUser.onClick(user)
+                    }
+                }
+            }
+            1 -> {
+                binding.apply {
+                    val urlAvatars = "${user.avatar}"
+                    avatar.loadCircleCrop(urlAvatars)
+                    userName.text = user.name
+
+                    checkUser.isVisible = false
+                }
             }
         }
+
     }
 }
 

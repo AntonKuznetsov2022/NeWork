@@ -27,8 +27,10 @@ interface OnInteractionListenerEvent {
     fun onEdit(event: Event) {}
     fun onRemove(event: Event) {}
     fun onParticipant(event: Event) {}
-    fun onSpeaker() {}
+    fun onSpeaker(event: Event) {}
     fun onPicture(event: Event) {}
+    fun onCoords(event: Event) {}
+    fun onProfile(event: Event) {}
 }
 
 class EventAdapter(
@@ -86,7 +88,7 @@ class EventViewHolder(
             members.text = "${event.participantsIds.size}"
 
             members.isChecked = event.participatedByMe
-            members.setOnClickListener{
+            members.setOnClickListener {
                 onInteractionListenerEvent.onParticipant(event)
             }
 
@@ -116,8 +118,22 @@ class EventViewHolder(
                 onInteractionListenerEvent.onPicture(event)
             }
 
-            speakers.setOnClickListener{
-                onInteractionListenerEvent.onSpeaker()
+            speakers.setOnClickListener {
+                onInteractionListenerEvent.onSpeaker(event)
+            }
+
+            coords.isVisible = event.coords != null
+
+            coords.setOnClickListener {
+                onInteractionListenerEvent.onCoords(event)
+            }
+
+            avatar.setOnClickListener {
+                onInteractionListenerEvent.onProfile(event)
+            }
+
+            author.setOnClickListener {
+                onInteractionListenerEvent.onProfile(event)
             }
 
             menu.setOnClickListener {

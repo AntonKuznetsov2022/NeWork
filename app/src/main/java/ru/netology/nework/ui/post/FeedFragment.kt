@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,8 +30,13 @@ import javax.inject.Inject
 class FeedFragment : Fragment() {
 
     lateinit var binding: FragmentFeedBinding
-
     private val viewModel: PostViewModel by activityViewModels()
+
+    companion object {
+        private const val VALUE = "POST"
+        private const val OPEN = "open"
+        private const val SEE = "see"
+    }
 
     @Inject
     lateinit var appAuth: AppAuth
@@ -71,10 +75,13 @@ class FeedFragment : Fragment() {
             }
 
             override fun onEdit(post: Post) {
+                viewModel.editPost(post)
+                val bundle = Bundle().apply {
+                    putString(OPEN, VALUE)
+                }
                 findNavController().navigate(
-                    R.id.action_nav_feed_to_newPostFragment,
-                    Bundle().apply { textArg = post.content })
-                viewModel.edit(post)
+                    R.id.action_nav_feed_to_newPostFragment, bundle
+                )
             }
 
             override fun onRemove(post: Post) {
@@ -86,12 +93,27 @@ class FeedFragment : Fragment() {
                     R.id.action_global_onPictureFragment,
                     Bundle().apply { textArg = post.attachment?.url })
             }
-        })
 
-        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart == 0) {
-                    binding.posts.smoothScrollToPosition(0)
+            override fun onCoords(post: Post) {
+                val bundle = Bundle().apply {
+                    putString(SEE, VALUE)
+                    putDouble("lat", post.coords!!.lat)
+                    putDouble("long", post.coords.long)
+                }
+                findNavController().navigate(
+                    R.id.mapFragment,
+                    bundle
+                )
+            }
+
+            override fun onProfile(post: Post) {
+                if (post.authorJob == null && !post.ownedByMe) {
+                    Snackbar.make(binding.root, R.string.empty_jobs, Snackbar.LENGTH_LONG).show()
+                } else {
+                    val bundle = Bundle().apply {
+                        putInt("userId", post.authorId)
+                    }
+                    findNavController().navigate(R.id.action_global_profileFragment, bundle)
                 }
             }
         })
@@ -129,7 +151,10 @@ class FeedFragment : Fragment() {
                 AuthDialog()
                     .show(parentFragmentManager, null)
             } else {
-                findNavController().navigate(R.id.action_nav_feed_to_newPostFragment)
+                val bundle = Bundle().apply {
+                    putString(OPEN, VALUE)
+                }
+                findNavController().navigate(R.id.action_nav_feed_to_newPostFragment, bundle)
             }
         }
 

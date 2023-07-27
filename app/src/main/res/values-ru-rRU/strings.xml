@@ -12,6 +12,7 @@
     <string name="menu_my_wall">Мои посты</string>
     <string name="menu_new_post">Новый пост</string>
     <string name="menu_new_event">Новая встреча</string>
+    <string name="menu_new_job">Новая работа</string>
 
     //menu
     <string name="menu_edit">Изменить</string>
@@ -23,10 +24,12 @@
     <string name="post_menu">Меню</string>
     <string name="post_like">Нравится</string>
     <string name="post_share">Поделиться</string>
+    <string name="post_coords">Координаты</string>
 
     //event post
     <string name="member">Участники</string>
     <string name="speakers">Спикеры</string>
+    <string name="empty_speakers">Во встрече нет ни одного спикера</string>
 
     //new event new post
     <string name="enter_text">Добавьте текст</string>
@@ -44,6 +47,7 @@
     <string name="user_added">Добавлено пользователей:</string>
     <string name="content_post_is_empty">Необходимо добавить описание поста</string>
     <string name="content_event_is_empty">Необходимо добавить описание встречи</string>
+    <string name="map">Карта</string>
 
     //adapter
     <string name="unknown_item_type">Неизвестный тип элемента</string>
@@ -95,9 +99,26 @@
     <string name="camera">Камера</string>
     <string name="gallery">Галерея</string>
     <string name="save_coords">Вы хотите выбрать эти координаты?</string>
+    <string name="changes_lost">Все изменения будут потеряны.\nВы хотите продолжить?</string>
 
     //map
     <string name="my_location">Моя локация</string>
     <string name="permission">Требуется предоставить доступ</string>
     <string name="error_location">Локация пользователя не найдена</string>
+
+    //profile
+    <string name="profile">Профиль</string>
+    <string name="post_job">Посты/Работа</string>
+
+    //job
+    <string name="company_name">Название компании</string>
+    <string name="position">Должность</string>
+    <string name="start">Дата начала работы</string>
+    <string name="finish">Дата окончания работы</string>
+    <string name="until_now">по н.в.</string>
+    <string name="empty_jobs">Пользователь не указал место работы</string>
+    <string name="company_name_error">Укажите название компании</string>
+    <string name="position_error">Укажите должность в компании</string>
+    <string name="date_start_error">Укажите дату начала работы</string>
+
 </resources>

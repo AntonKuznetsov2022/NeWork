@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.dto.AttachmentType
+import ru.netology.nework.dto.Coords
 import ru.netology.nework.dto.FeedItem
 import ru.netology.nework.dto.Post
 import ru.netology.nework.model.FeedModelState
@@ -73,8 +74,8 @@ class PostViewModel @Inject constructor(
 
     fun loadPosts() {
         viewModelScope.launch {
+            _state.value = FeedModelState(loading = true)
             try {
-                _state.value = FeedModelState(loading = true)
                 repository.get()
                 _state.value = FeedModelState()
             } catch (e: Exception) {
@@ -92,7 +93,8 @@ class PostViewModel @Inject constructor(
                             null -> repository.save(token, it)
                             else -> {
                                 media.attachmentType?.let { it1 ->
-                                    repository.saveWithAttachment(token, it, media,
+                                    repository.saveWithAttachment(
+                                        token, it, media,
                                         it1
                                     )
                                 }
@@ -110,8 +112,13 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun edit(post: Post) {
+    fun editPost(post: Post) = viewModelScope.launch {
         edited.value = post
+    }
+
+    fun cancelEditPost() = viewModelScope.launch {
+        edited.value = empty
+        clearPhoto()
     }
 
     fun changeContent(content: String) {
@@ -136,6 +143,11 @@ class PostViewModel @Inject constructor(
 
     fun clearPhoto() {
         _media.value = null
+    }
+
+    fun saveCoords(latitude: Double?, longitude: Double?) {
+        edited.value =
+            edited.value?.copy(coords = latitude?.let { longitude?.let { it1 -> Coords(it, it1) } })
     }
 
     fun removeById(id: Int) {

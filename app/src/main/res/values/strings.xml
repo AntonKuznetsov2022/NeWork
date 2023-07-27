@@ -11,7 +11,7 @@
     <string name="menu_my_wall">My wall</string>
     <string name="menu_new_post">New post</string>
     <string name="menu_new_event">New event</string>
-
+    <string name="menu_new_job">New job</string>
 
     //menu
     <string name="menu_edit">Edit</string>
@@ -23,10 +23,12 @@
     <string name="post_menu">Menu</string>
     <string name="post_like">Like</string>
     <string name="post_share">Share</string>
+    <string name="post_coords">Coordinates</string>
 
     //event post
     <string name="member">Member</string>
     <string name="speakers">Speakers</string>
+    <string name="empty_speakers">There are no speakers in the meeting</string>
 
     //new event new post
     <string name="enter_text">Enter text</string>
@@ -44,6 +46,7 @@
     <string name="user_added">User added:</string>
     <string name="content_post_is_empty">Add a post description</string>
     <string name="content_event_is_empty">Add a event description</string>
+    <string name="map">Map</string>
 
     //adapter
     <string name="unknown_item_type">Unknown item type</string>
@@ -95,9 +98,26 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="save_coords">Do you want to select these coordinates?</string>
+    <string name="changes_lost">All changes will be lost.\nDo you want to continue?</string>
 
     //map
     <string name="my_location">My location</string>
     <string name="permission">Permission</string>
     <string name="error_location">Location can\'t be find</string>
+
+    //profile
+    <string name="profile">Profile</string>
+    <string name="post_job">Post/Job</string>
+
+    //job
+    <string name="company_name">Company name</string>
+    <string name="position">Position</string>
+    <string name="start">Date start</string>
+    <string name="finish">Date finish</string>
+    <string name="until_now">Until now</string>
+    <string name="empty_jobs">No job listed</string>
+    <string name="company_name_error">Company name isn\'t blank</string>
+    <string name="position_error">Position isn\'t blank</string>
+    <string name="date_start_error">Date start isn\'t blank</string>
+
 </resources>

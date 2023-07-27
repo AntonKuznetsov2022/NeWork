@@ -1,6 +1,7 @@
 package ru.netology.nework.ui
 
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -83,19 +84,22 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        onBackPressedDispatcher.addCallback(this) {
+            findNavController(R.id.nav_host_fragment_content_main).navigateUp(appBarConfiguration)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        onBackPressedDispatcher.onBackPressed()
+        return super.onSupportNavigateUp()
     }
 
     private fun setupUser() {
-        userViewModel.getUserById()
+        userViewModel.getUserSignIn()
 
-        userViewModel.user.observe(this) { user ->
+        userViewModel.userSignIn.observe(this) { user ->
             with(navHeaderBinding) {
-
                 if (authViewModel.authorized) {
                     if (user.avatar != null) {
                         avatarNavHeader.isVisible = true
